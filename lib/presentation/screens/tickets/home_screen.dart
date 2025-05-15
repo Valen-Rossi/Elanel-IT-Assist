@@ -1,8 +1,9 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:elanel_asistencia_it/domain/entities/ticket.dart';
 import 'package:elanel_asistencia_it/presentation/providers/providers.dart';
 import 'package:elanel_asistencia_it/presentation/widgets/widgets.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class HomeScreen extends StatelessWidget {
 
@@ -14,6 +15,9 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: const _HomeView(),
+      bottomNavigationBar: const CustomBottomNavigationBar(
+        // currentIndex: 0,
+      ),
     );
   }
 }
