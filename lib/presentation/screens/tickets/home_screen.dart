@@ -85,7 +85,7 @@ class _HomeViewState extends ConsumerState<_HomeView> {
       Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         alignment: Alignment.centerLeft,
-        child: Text('Tickets Recientes',
+        child: Text('Tickets recientes',
           style: TextStyle(
             color: colors.primary,
             fontSize: 17,

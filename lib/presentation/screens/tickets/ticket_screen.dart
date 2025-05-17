@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:timeago_flutter/timeago_flutter.dart';
+import 'package:timeline_tile/timeline_tile.dart';
 import 'package:elanel_asistencia_it/presentation/providers/providers.dart';
 import 'package:elanel_asistencia_it/domain/entities/ticket.dart';
-import 'package:timeago_flutter/timeago_flutter.dart';
 
 class TicketScreen extends ConsumerWidget {
   static const name = 'ticket-screen';
@@ -55,132 +56,135 @@ class _TicketView extends StatelessWidget {
 
                 const SizedBox(height: 20),
 
-                Row(
-                  children: [
-
-                    Icon(Icons.check_circle,
-                      color: colors.primary,
-                      size: 34,
+                 // Paso 1: Ticket creado
+                TimelineTile(
+                  isFirst: true,
+                  indicatorStyle: IndicatorStyle(
+                    width: 30,
+                    height: 30,
+                    indicator: CircleAvatar(
+                      backgroundColor: colors.surface,
+                      child: Icon(Icons.check_circle, 
+                        color: colors.primary,
+                        size: 32,
+                      ),
                     ),
-                    
-                    const SizedBox(width: 10),
-
-                    Text(
+                  ),
+                  afterLineStyle: LineStyle(color: colors.surface, thickness: 2),
+                  endChild: Padding(
+                    padding: const EdgeInsets.only(left: 8, top: 5, bottom: 5),
+                    child: Text(
                       'Ticket creado',
-                      style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w500,
-                        color: colors.primary,
-                      ),
+                      style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500, color: colors.primary),
                     ),
-
-                  ],
+                  ),
                 ),
 
-                SizedBox(height: 20),
-
-                Row(
-                  children: [
-
-                    Icon(Icons.account_circle,
-                      color: ticket.technicianId != ''
-                          ? colors.primary
-                          : colors.secondary,
-                      size: 34,
-                    ),
-                    
-                    const SizedBox(width: 10),
-
-                    Text(
-                      'Técnico asignado',
-                      style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w500,
-                        color: colors.primary,
+                // Paso 2: Técnico asignado
+                TimelineTile(
+                  indicatorStyle: IndicatorStyle(
+                    width: 30,
+                    height: 30,
+                    indicator: CircleAvatar(
+                      backgroundColor: colors.surface,
+                      child: Icon(Icons.account_circle,
+                        size: 32,
+                        color: ticket.technicianId != '' 
+                          ? colors.primary  
+                          : colors.secondary
                       ),
                     ),
-
-                  ],
-                ),
-
-                SizedBox(height: 10),
-
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 37),
-                  child: ticket.technicianId != ''
-                      ? Text(
-                        ticket.technicianId,
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w400,
-                          color: colors.primary,
+                  ),
+                  afterLineStyle: LineStyle(color: Colors.grey.shade700, thickness: 2),
+                  beforeLineStyle: LineStyle(color: Colors.grey.shade700, thickness: 2),
+                  endChild: Padding(
+                    padding: const EdgeInsets.only(left: 8, top: 50),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Técnico asignado',
+                          style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500, color: colors.primary),
                         ),
-                      )
-                      : FilledButton.tonal(
-                        style: ButtonStyle(
-                          visualDensity: VisualDensity.compact, 
-                        ),
-                        onPressed: () {
-                          
-                        },
-                        child: const Text('Asignar técnico'),
-                      ),
+                        const SizedBox(height: 10),
+                        ticket.technicianId != ''
+                            ? Padding(
+                              padding: const EdgeInsets.only(top: 7, left: 7, bottom: 7),
+                              child: Text(
+                                  ticket.technicianId,
+                                  style: TextStyle(fontSize: 17, color: colors.primary),
+                                ),
+                            )
+                            : FilledButton.tonal(
+                                style: ButtonStyle(visualDensity: VisualDensity.compact),
+                                onPressed: () {},
+                                child: const Text('Asignar técnico'),
+                              ),
+                      ],
+                    ),
+                  ),
                 ),
 
-                SizedBox(height: 20),
-
-                Row(
-                  children: [
-
-                    Icon(Icons.timelapse,
-                      color: ticket.status == TicketStatus.inProgress || ticket.status == TicketStatus.resolved
-                          ? colors.primary
-                          : colors.secondary,
-                      size: 34,
+                // Paso 3: En curso
+                TimelineTile(
+                  indicatorStyle: IndicatorStyle(
+                    width: 30,
+                    height: 30,
+                    indicator: CircleAvatar(
+                      backgroundColor: colors.surface,
+                      child: Icon(Icons.timelapse,
+                        size: 32,
+                        color: (ticket.status == TicketStatus.inProgress || ticket.status == TicketStatus.resolved)
+                            ? colors.primary
+                            : colors.secondary),
                     ),
-                    
-                    const SizedBox(width: 10),
-
-                    Text(
+                  ),
+                  afterLineStyle: LineStyle(color: Colors.grey.shade700, thickness: 2),
+                  beforeLineStyle: LineStyle(color: Colors.grey.shade700, thickness: 2),
+                  endChild: Padding(
+                    padding: const EdgeInsets.only(left: 8, top: 22, bottom: 20),
+                    child: Text(
                       'En curso',
                       style: TextStyle(
                         fontSize: 17,
                         fontWeight: FontWeight.w500,
-                        color: ticket.status == TicketStatus.inProgress || ticket.status == TicketStatus.resolved
-                          ? colors.primary
-                          : colors.secondary,
+                        color: (ticket.status == TicketStatus.inProgress || ticket.status == TicketStatus.resolved)
+                            ? colors.primary
+                            : colors.secondary,
                       ),
                     ),
-
-                  ],
+                  ),
                 ),
 
-                SizedBox(height: 20),
-
-                Row(
-                  children: [
-
-                    Icon(Icons.check_circle,
-                      color: ticket.status == TicketStatus.resolved
-                          ? colors.primary
-                          : colors.secondary,
-                      size: 34,
+                // Paso 4: Resuelto
+                TimelineTile(
+                  isLast: true,
+                  indicatorStyle: IndicatorStyle(
+                    width: 30,
+                    height: 30,
+                    indicator: CircleAvatar(
+                      backgroundColor: colors.surface,
+                      child: Icon(Icons.check_circle,
+                        size: 32,
+                        color: ticket.status == TicketStatus.resolved
+                            ? colors.primary
+                            : colors.secondary),
                     ),
-                    
-                    const SizedBox(width: 10),
-
-                    Text(
+                  ),
+                  beforeLineStyle: LineStyle(color: Colors.grey.shade700, thickness: 2),
+                  endChild: Padding(
+                    padding: const EdgeInsets.only(left: 8, top: 32, bottom: 30),
+                    child: Text(
                       'Resuelto',
                       style: TextStyle(
                         fontSize: 17,
                         fontWeight: FontWeight.w500,
                         color: ticket.status == TicketStatus.resolved
-                          ? colors.primary
-                          : colors.secondary,
+                            ? colors.primary
+                            : colors.secondary,
                       ),
                     ),
-
-                  ],
+                  ),
                 ),
 
               ],
