@@ -25,7 +25,7 @@ class TicketScreen extends ConsumerWidget {
               color: colors.primary,
               fontSize: 22,
               fontWeight: FontWeight.w600,
-            ),
+          ),
         ),
       ),
       body: _TicketView(ticket: ticket),

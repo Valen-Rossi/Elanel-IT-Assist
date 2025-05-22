@@ -11,15 +11,12 @@ class TicketsRepositoryImpl extends TicketsRepository {
   
   @override
   Future<List<Ticket>> getTickets() {
-
     return datasource.getTickets();
-
   }
   
   @override
   Future<void> addTicket(Ticket ticket) {
-    // TODO: implement addTicket
-    throw UnimplementedError();
+    return datasource.addTicket(ticket);
   }
   
   @override
