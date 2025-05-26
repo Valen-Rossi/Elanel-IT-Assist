@@ -53,6 +53,11 @@ final appRouter = GoRouter(
         builder: (context, state) => const NewTicketScreen(),
       ),
 
+      GoRoute(
+        path: '/new-faq',
+        builder: (context, state) => const NewFAQScreen(),
+      ),
+
     ],
 
 );
