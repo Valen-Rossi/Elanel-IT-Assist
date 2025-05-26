@@ -36,7 +36,14 @@ class TicketsNotifier extends StateNotifier<List<Ticket>> {
   }
 
   Future<void> createTicket(Ticket ticket) async {
+    
+    if (isLoading) return;
+
+    isLoading = true;
+    
     await addTicket(ticket);
-    state = [ticket, ...state];
+    await loadTickets();
+    
+    isLoading = false;
   }
 }
