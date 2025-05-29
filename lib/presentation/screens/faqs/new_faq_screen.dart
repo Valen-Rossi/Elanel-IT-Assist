@@ -69,6 +69,7 @@ class NewFAQScreenState extends ConsumerState<NewFAQScreen> {
                 useIncludedTextField: false,
                 controller: _descriptionController,
                 alignment: WrapAlignment.center,
+                alignCollapseButtonEnd: true,
                 width: 50,
                 backgroundColor: colors.surface,
                 iconColor: colors.onSurface,
