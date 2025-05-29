@@ -18,7 +18,7 @@ class ProductsFbDatasource extends IProductsDatasource {
     Product(
       id: '003',
       name: 'Monitor LG UltraWide 34"',
-      type: ProductType.screen,
+      type: ProductType.monitor,
     ),
   ];
 

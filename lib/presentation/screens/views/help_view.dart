@@ -1,4 +1,5 @@
 import 'package:elanel_asistencia_it/presentation/providers/providers.dart';
+import 'package:elanel_asistencia_it/presentation/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -27,6 +28,7 @@ class HelpViewState extends ConsumerState<HelpView> {
   Widget build(BuildContext context) {
 
     final faqs = ref.watch(faqsProvider);
+    final colors = Theme.of(context).colorScheme;
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -37,22 +39,19 @@ class HelpViewState extends ConsumerState<HelpView> {
         child: const Icon(Icons.add),
       ),
       appBar: AppBar(
-        title: const Text('Preguntas Frecuentes'),
+        title: Text('Preguntas Frecuentes',
+          style: TextStyle(
+              color: colors.primary,
+              fontSize: 22,
+              fontWeight: FontWeight.w600,
+          ),
+        ),
       ),
       body: ListView.builder(
         itemCount: faqs.length,
         itemBuilder: (context, index) {
           final faq = faqs[index];
-          return ListTile(
-            title: Text(faq.title),
-            subtitle: Text(faq.description,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-            onTap: () {
-              // Aquí podrías implementar una acción al tocar el FAQ
-            },
-          );
+          return FAQCard(faq: faq);
         },
       ),
   );

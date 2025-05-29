@@ -1,4 +1,5 @@
 import 'package:elanel_asistencia_it/presentation/providers/providers.dart';
+import 'package:elanel_asistencia_it/presentation/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -27,6 +28,7 @@ class InventaryViewState extends ConsumerState<InventaryView> {
   Widget build(BuildContext context) {
 
     final products = ref.watch(productsProvider);
+    final colors = Theme.of(context).colorScheme;
     
     return Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -37,18 +39,23 @@ class InventaryViewState extends ConsumerState<InventaryView> {
         child: const Icon(Icons.add),
       ),
       appBar: AppBar(
-        title: const Text('Inventario'),
+        title: Text('Inventario',
+        style: TextStyle(
+          color: colors.primary,
+          fontSize: 22,
+          fontWeight: FontWeight.w600,
+          ),
+        ),
       ),
       body: products.isEmpty
         ? const Center(child: CircularProgressIndicator())
         : ListView.builder(
             itemCount: products.length,
             itemBuilder: (context, index) {
+
               final product = products[index];
-              return ListTile(
-                title: Text(product.name),
-                subtitle: Text(product.type.toString()),
-              );
+              
+              return ProductCard(product: product);
             },
           ),
     );

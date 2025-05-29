@@ -27,6 +27,28 @@ final appRouter = GoRouter(
                 }
               ),
 
+              GoRoute(
+                path: "product/:id",
+                name: ProductScreen.name,
+                builder: (context, state) {
+
+                  final productId = state.pathParameters['id']?? '';
+
+                  return ProductScreen(productId: productId);
+                }
+              ),
+
+              GoRoute(
+                path: "faq/:id",
+                name: FAQScreen.name,
+                builder: (context, state) {
+
+                  final faqId = state.pathParameters['id']?? '';
+
+                  return FAQScreen(faqId: faqId);
+                }
+              ),
+
             ]
           ),
 
