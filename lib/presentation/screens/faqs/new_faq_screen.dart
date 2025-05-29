@@ -1,54 +1,48 @@
+import 'package:elanel_asistencia_it/domain/entities/faq.dart';
+import 'package:elanel_asistencia_it/presentation/providers/faqs/faqs_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:elanel_asistencia_it/presentation/widgets/shared/custom_text_form_field.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:markdown_toolbar/markdown_toolbar.dart';
 
-class NewFAQScreen extends StatefulWidget {
+class NewFAQScreen extends ConsumerStatefulWidget {
   static const name = 'new-faq-screen';
 
   const NewFAQScreen({super.key});
 
   @override
-  State<NewFAQScreen> createState() => _NewFAQScreenState();
+  NewFAQScreenState createState() => NewFAQScreenState();
 }
 
-class _NewFAQScreenState extends State<NewFAQScreen> {
+class NewFAQScreenState extends ConsumerState<NewFAQScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _titleController = TextEditingController();
+
   final TextEditingController _descriptionController = TextEditingController();
 
-  void _submit() {
-    if (_formKey.currentState!.validate()) {
-      final title = _titleController.text.trim();
-      final description = _descriptionController.text.trim();
+  String faqTitle = '';
+  FAQType faqType = FAQType.hardware;
+  bool isLoading = false;
 
-      if (description.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('La descripción es obligatoria')),
-        );
-        return;
-      }
-
-      // Aquí puedes implementar la lógica para guardar el FAQ
-      print('Título: $title');
-      print('Descripción: $description');
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('FAQ guardada correctamente')),
-      );
-
-      _titleController.clear();
-      _descriptionController.clear();
-    }
+  @override
+  void dispose() {
+    _descriptionController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-
     final colors = Theme.of(context).colorScheme;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Nueva FAQ'),
+        title: Text(
+          'Nueva Pregunta Frecuente',
+          style: TextStyle(
+            color: colors.primary,
+            fontSize: 22,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
@@ -56,13 +50,13 @@ class _NewFAQScreenState extends State<NewFAQScreen> {
           key: _formKey,
           child: Column(
             spacing: 20,
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
 
               CustomTextFormField(
-                controller: _titleController,
                 label: 'Título',
                 hintText: 'Ingrese el título del problema',
+                icon: Icons.title,
+                onChanged: (value) => faqTitle = value.trim(),
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
                     return 'El título es obligatorio';
@@ -80,15 +74,12 @@ class _NewFAQScreenState extends State<NewFAQScreen> {
                 iconColor: colors.onSurface,
               ),
 
-              TextFormField(
+              CustomTextFormField(
+                label: 'Descripción',
+                hintText: 'Detalla la solución del problema',
                 controller: _descriptionController,
                 minLines: 10,
                 maxLines: 25,
-                decoration: const InputDecoration(
-                  labelText: 'Descripción',
-                  hintText: 'Ingrese la descripción de la solución',
-                  border: OutlineInputBorder(),
-                ),
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
                     return 'La descripción es obligatoria';
@@ -97,8 +88,38 @@ class _NewFAQScreenState extends State<NewFAQScreen> {
                 },
               ),
 
-              ElevatedButton.icon(
-                onPressed: _submit,
+              FilledButton.tonalIcon(
+                onPressed: () async {
+                  final isValid = _formKey.currentState!.validate();
+                  if (!isValid || isLoading) return;
+
+                  setState(() => isLoading = true);
+
+                  final newFAQ = FAQ(
+                    id: DateTime.now().millisecondsSinceEpoch.toString(),
+                    title: faqTitle,
+                    description: _descriptionController.text.trim(),
+                    type: faqType,
+                  );
+
+                  await ref
+                      .read(faqsProvider.notifier)
+                      .createFAQ(newFAQ);
+
+                  setState(() => isLoading = false);
+
+                  if (context.mounted) {
+                    Navigator.of(context).pop();
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: const Text('FAQ creada con éxito'),
+                        duration: const Duration(seconds: 3),
+                        backgroundColor: colors.primary,
+                      ),
+                    );
+                  }
+                },
                 icon: const Icon(Icons.save),
                 label: const Text('Guardar'),
               ),

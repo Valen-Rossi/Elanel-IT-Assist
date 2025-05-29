@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_markdown/flutter_markdown.dart'; // <- Importante
 import 'package:elanel_asistencia_it/domain/entities/faq.dart';
 import 'package:elanel_asistencia_it/presentation/providers/providers.dart';
 
@@ -8,11 +9,10 @@ class FAQScreen extends ConsumerWidget {
   final String faqId;
 
   const FAQScreen({super.key, required this.faqId});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
     final FAQ faq = ref.watch(faqByIdProvider(faqId));
-    
     final colors = Theme.of(context).colorScheme;
 
     return Scaffold(
@@ -20,9 +20,9 @@ class FAQScreen extends ConsumerWidget {
         title: Text(
           'Detalle de la Solución',
           style: TextStyle(
-              color: colors.primary,
-              fontSize: 22,
-              fontWeight: FontWeight.w600,
+            color: colors.primary,
+            fontSize: 22,
+            fontWeight: FontWeight.w600,
           ),
         ),
       ),
@@ -33,27 +33,23 @@ class FAQScreen extends ConsumerWidget {
 
 class _FAQView extends StatelessWidget {
   const _FAQView({
-    required this.faq, 
+    required this.faq,
   });
 
   final FAQ faq;
 
   @override
   Widget build(BuildContext context) {
-
     return Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-
-                _InfoFAQ(faq: faq),
-
-                const SizedBox(height: 20),
-
-              ],
-            ),
-          );
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          _InfoFAQ(faq: faq),
+          const SizedBox(height: 20),
+        ],
+      ),
+    );
   }
 }
 
@@ -66,36 +62,33 @@ class _InfoFAQ extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final colors = Theme.of(context).colorScheme;
 
     return SingleChildScrollView(
-      physics: BouncingScrollPhysics(),
+      physics: const BouncingScrollPhysics(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-      
+
           Text(
             faq.title,
             textAlign: TextAlign.left,
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w700,
-              color: colors.primary
+              color: colors.primary,
             ),
           ),
-          
+
           const SizedBox(height: 10),
-          
-          Text(
-            faq.description,
-            textAlign: TextAlign.justify,
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
+
+          MarkdownBody(
+            data: faq.description,
+            styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
+              p: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
             ),
           ),
-          
+
         ],
       ),
     );

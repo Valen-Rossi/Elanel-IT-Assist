@@ -16,8 +16,7 @@ class FAQsRepositoryImpl extends IFAQsRepository {
 
   @override
   Future<void> addFAQ(FAQ faq) {
-    // TODO: implement addFAQ
-    throw UnimplementedError();
+    return datasource.addFAQ(faq);
   }
 
   @override
