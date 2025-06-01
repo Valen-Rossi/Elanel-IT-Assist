@@ -1,7 +1,7 @@
 import 'package:elanel_asistencia_it/domain/entities/faq.dart';
 import 'package:elanel_asistencia_it/presentation/providers/faqs/faqs_provider.dart';
+import 'package:elanel_asistencia_it/presentation/widgets/widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:elanel_asistencia_it/presentation/widgets/shared/custom_text_form_field.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:markdown_toolbar/markdown_toolbar.dart';
 
@@ -81,6 +81,8 @@ class NewFAQScreenState extends ConsumerState<NewFAQScreen> {
                 controller: _descriptionController,
                 minLines: 10,
                 maxLines: 25,
+                textInputAction: TextInputAction.newline,
+                textInputType: TextInputType.multiline,
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
                     return 'La descripción es obligatoria';
@@ -88,6 +90,29 @@ class NewFAQScreenState extends ConsumerState<NewFAQScreen> {
                   return null;
                 },
               ),
+              
+              CustomDropdownFormField<FAQType>(
+                label: 'Tipo de problema',
+                hint: 'Elija el tipo de problema',
+                items: FAQType.values.map((type) {
+                  return DropdownMenuItem(
+                    value: type,
+                    child: Text(type.name[0].toUpperCase() + type.name.substring(1)),
+                  );
+                }).toList(),
+                validator: (value) {
+                  if (value == null) return 'El tipo de problema es obligatorio';
+                  return null;
+                },
+                onChanged: (value) {
+                  if (value != null) {
+                    setState(() {
+                      faqType = value;
+                    });
+                  }
+                },
+                ),
+
 
               FilledButton.tonalIcon(
                 onPressed: () async {

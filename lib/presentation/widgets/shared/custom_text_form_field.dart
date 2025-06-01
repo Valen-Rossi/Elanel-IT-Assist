@@ -8,6 +8,8 @@ class CustomTextFormField extends StatelessWidget {
   final int? minLines;
   final int? maxLines;
   final TextCapitalization? textCapitalization;
+  final TextInputAction? textInputAction;
+  final TextInputType textInputType;
   final bool obscureText;
   final Function(String)? onChanged;
   final String? Function(String?)? validator;
@@ -20,6 +22,8 @@ class CustomTextFormField extends StatelessWidget {
     this.hintText,
     this.minLines= 1,  
     this.maxLines= 1, 
+    this.textInputAction,
+    this.textInputType = TextInputType.text,
     this.textCapitalization= TextCapitalization.sentences, 
     this.obscureText= false,
     this.onChanged, 
@@ -42,6 +46,8 @@ class CustomTextFormField extends StatelessWidget {
       textCapitalization: textCapitalization!,
       onChanged: onChanged,
       validator: validator,
+      textInputAction: textInputAction,
+      keyboardType: textInputType,
       autovalidateMode: AutovalidateMode.onUserInteraction,
       obscureText: obscureText,
       minLines: minLines,
