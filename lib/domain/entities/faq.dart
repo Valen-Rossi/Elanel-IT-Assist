@@ -1,7 +1,9 @@
 enum FAQType {
   hardware,
   software,
-  account,
+  account,         // Problemas de inicio de sesión, permisos, cuentas bloqueadas
+  network,
+  other,          // Casos especiales
 }
 
 class FAQ {
