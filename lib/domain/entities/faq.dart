@@ -42,15 +42,15 @@ extension FAQTypeColor on FAQType {
   Color get color {
     switch (this) {
       case FAQType.hardware:
-        return Colors.lightBlue.shade100;
+        return Colors.lightBlue.shade400;
       case FAQType.software:
-        return Colors.deepOrange.shade100;
+        return Colors.deepOrange.shade400;
       case FAQType.account:
-        return Colors.lightGreen.shade100;
+        return Colors.lightGreen.shade400;
       case FAQType.network:
-        return Colors.blueGrey.shade100;
+        return Colors.blueGrey.shade400;
       case FAQType.other:
-        return Colors.grey.shade300;
+        return Colors.grey.shade400;
     }
   }
 }

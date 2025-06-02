@@ -118,15 +118,15 @@ extension TicketCategoryColor on TicketCategory {
   Color get color {
     switch (this) {
       case TicketCategory.hardware:
-        return Colors.blue.shade200;
+        return Colors.blue.shade400;
       case TicketCategory.software:
-        return Colors.purple.shade200;
+        return Colors.purple.shade400;
       case TicketCategory.account:
-        return Colors.cyan.shade200;
+        return Colors.cyan.shade400;
       case TicketCategory.network:
-        return Colors.indigo.shade200;
+        return Colors.indigo.shade400;
       case TicketCategory.other:
-        return Colors.grey.shade300;
+        return Colors.grey.shade400;
     }
   }
 }
@@ -135,11 +135,11 @@ extension TicketPriorityColor on TicketPriority {
   Color get color {
     switch (this) {
       case TicketPriority.low:
-        return Colors.green.shade200;
+        return const Color.fromARGB(113, 17, 209, 27);
       case TicketPriority.medium:
-        return Colors.orange.shade300;
+        return const Color.fromARGB(115, 211, 131, 12);
       case TicketPriority.high:
-        return Colors.red.shade300;
+        return const Color.fromARGB(121, 212, 21, 18);
     }
   }
 }

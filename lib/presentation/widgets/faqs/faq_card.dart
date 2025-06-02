@@ -36,6 +36,7 @@ class FAQCard extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 17, vertical: 17),
             child: Column(
+              spacing: 5,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
 
@@ -48,7 +49,14 @@ class FAQCard extends StatelessWidget {
                   ),
                 ),
 
-                const SizedBox(height: 5),
+                // Container(
+                //   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                //   decoration: BoxDecoration(
+                //     color: faq.type.color,
+                //     borderRadius: BorderRadius.circular(20),
+                //   ),
+                //   child: Text(faq.type.label),
+                // ),
 
                 Text(
                   _markdownToPlainText(faq.description),

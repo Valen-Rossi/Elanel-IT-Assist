@@ -66,7 +66,7 @@ class _TicketViewState extends ConsumerState<_TicketView> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
 
-                _InfoTicket(size: size, ticket: widget.ticket),
+                _InfoTicket(size: size, ticket: widget.ticket, colors: colors,),
 
                 const SizedBox(height: 20),
 
@@ -245,10 +245,12 @@ class _InfoTicket extends StatelessWidget {
   const _InfoTicket({
     required this.size,
     required this.ticket,
+    required this.colors,
   });
 
   final Size size;
   final Ticket ticket;
+  final ColorScheme colors;
 
   @override
   Widget build(BuildContext context) {
@@ -306,15 +308,39 @@ class _InfoTicket extends StatelessWidget {
     
           const SizedBox(height: 10),
     
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-            decoration: BoxDecoration(
-              color: ticket.status.color,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Text(ticket.status.label),
+          Row(
+            spacing: 5,
+            children: [
+              
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                decoration: BoxDecoration(
+                  color: ticket.status.color,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(ticket.status.label),
+              ),
+                                    
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                decoration: BoxDecoration(
+                  color: colors.inversePrimary,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(ticket.category.label),
+              ),
+                                    
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                decoration: BoxDecoration(
+                  color: ticket.priority.color,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(ticket.priority.label),
+              ),
+            
+            ],
           ),
-    
         ],
       ),
     );

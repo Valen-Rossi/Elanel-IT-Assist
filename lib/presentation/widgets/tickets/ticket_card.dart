@@ -43,14 +43,41 @@ class TicketCard extends StatelessWidget {
                           fontWeight: FontWeight.w500,
                         ),
                       ),
+                      
                       const SizedBox(height: 5),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                        decoration: BoxDecoration(
-                          color: ticket.status.color,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Text(ticket.status.label),
+                      
+                      Row(
+                        spacing: 5,
+                        children: [
+                          
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                            decoration: BoxDecoration(
+                              color: ticket.status.color,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Text(ticket.status.label),
+                          ),
+                                               
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                            decoration: BoxDecoration(
+                              color: colors.inversePrimary,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Text(ticket.category.label),
+                          ),
+                                               
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                            decoration: BoxDecoration(
+                              color: ticket.priority.color,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Text(ticket.priority.label),
+                          ),
+                        
+                        ],
                       ),
                   
                     ],

@@ -30,7 +30,10 @@ class DeviceCard extends StatelessWidget {
             child: Row(
               children: [
 
-                Icon(device.type.icon),
+                Icon(
+                  device.type.icon,
+                  color: colors.primary,
+                ),
                 
                 SizedBox(width: 17),
 
@@ -53,6 +56,8 @@ class DeviceCard extends StatelessWidget {
                     ],
                   ),
                 ),
+
+                SizedBox(width: 5),
 
                 Text(
                   device.type.label,
