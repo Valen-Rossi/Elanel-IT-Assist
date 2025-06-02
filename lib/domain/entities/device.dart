@@ -101,3 +101,38 @@ extension DeviceTypeIcon on DeviceType {
     }
   }
 }
+
+extension DeviceTypeColor on DeviceType {
+  Color get color {
+    switch (this) {
+      case DeviceType.laptop:
+        return Colors.blue.shade100;
+      case DeviceType.phone:
+        return Colors.green.shade100;
+      case DeviceType.scanner:
+        return Colors.deepPurple.shade100;
+      case DeviceType.printer:
+        return Colors.orange.shade100;
+      case DeviceType.monitor:
+        return Colors.teal.shade100;
+      case DeviceType.desktopPC:
+        return Colors.indigo.shade100;
+      case DeviceType.keyboard:
+        return Colors.lime.shade100;
+      case DeviceType.router:
+        return Colors.amber.shade100;
+      case DeviceType.tablet:
+        return Colors.pink.shade100;
+      case DeviceType.projector:
+        return Colors.cyan.shade100;
+      case DeviceType.speaker:
+        return Colors.red.shade100;
+      case DeviceType.mouse:
+        return Colors.brown.shade100;
+      case DeviceType.ups:
+        return Colors.grey.shade400;
+      case DeviceType.other:
+        return Colors.grey.shade200;
+    }
+  }
+}

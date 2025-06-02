@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 enum FAQType {
   hardware,
   software,
@@ -33,6 +35,22 @@ extension FAQTypeLabel on FAQType {
         return 'Red';
       case FAQType.other:
         return 'Otro';
+    }
+  }
+}
+extension FAQTypeColor on FAQType {
+  Color get color {
+    switch (this) {
+      case FAQType.hardware:
+        return Colors.lightBlue.shade100;
+      case FAQType.software:
+        return Colors.deepOrange.shade100;
+      case FAQType.account:
+        return Colors.lightGreen.shade100;
+      case FAQType.network:
+        return Colors.blueGrey.shade100;
+      case FAQType.other:
+        return Colors.grey.shade300;
     }
   }
 }

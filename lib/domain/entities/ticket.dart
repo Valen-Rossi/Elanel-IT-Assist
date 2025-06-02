@@ -113,3 +113,33 @@ extension TicketStatusColor on TicketStatus {
     }
   }
 }
+
+extension TicketCategoryColor on TicketCategory {
+  Color get color {
+    switch (this) {
+      case TicketCategory.hardware:
+        return Colors.blue.shade200;
+      case TicketCategory.software:
+        return Colors.purple.shade200;
+      case TicketCategory.account:
+        return Colors.cyan.shade200;
+      case TicketCategory.network:
+        return Colors.indigo.shade200;
+      case TicketCategory.other:
+        return Colors.grey.shade300;
+    }
+  }
+}
+
+extension TicketPriorityColor on TicketPriority {
+  Color get color {
+    switch (this) {
+      case TicketPriority.low:
+        return Colors.green.shade200;
+      case TicketPriority.medium:
+        return Colors.orange.shade300;
+      case TicketPriority.high:
+        return Colors.red.shade300;
+    }
+  }
+}

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 enum UserRole { admin, client, technician }
 
 class User {
@@ -23,6 +24,19 @@ extension UserRoleLabel on UserRole {
         return 'Cliente';
       case UserRole.technician:
         return 'Técnico';
+    }
+  }
+}
+
+extension UserRoleColor on UserRole {
+  Color get color {
+    switch (this) {
+      case UserRole.admin:
+        return Colors.deepPurple.shade200;
+      case UserRole.client:
+        return Colors.blue.shade200;
+      case UserRole.technician:
+        return Colors.green.shade200;
     }
   }
 }
