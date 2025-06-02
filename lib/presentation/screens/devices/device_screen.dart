@@ -135,7 +135,19 @@ class _InfoDevice extends StatelessWidget {
             ),
           ),
     
-          const SizedBox(height: 10),
+          const SizedBox(height: 37),
+
+          Text(
+            'Cantidad de tickets referidos: ${device.ticketCount}',
+          ),
+    
+          const SizedBox(height: 5),
+
+          (device.ticketCount !=0)
+          ? Text(
+              'Último mantenimiento: ${device.lastMaintenance.day.toString().padLeft(2, '0')}/${device.lastMaintenance.month.toString().padLeft(2, '0')}/${device.lastMaintenance.year}',
+            )
+          : Text('Este dispositivo aún no tuvo mantenimientos')
     
         ],
       ),
