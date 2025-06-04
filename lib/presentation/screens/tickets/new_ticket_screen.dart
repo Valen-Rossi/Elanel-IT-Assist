@@ -122,54 +122,82 @@ class _NewTicketViewState extends ConsumerState<_NewTicketView> {
               validator: (value) => value == null ? 'La categoría es requerida' : null,
             ),
 
-            CustomTextFormField(
-              controller: _deviceSearchController,
-              textInputType: TextInputType.number,
-              label: 'Buscar por ID de dispositivo',
-              hintText: 'Por ejemplo: 001',
-              icon: Icons.search_rounded,
-              suffixIcon: IconButton(
-                icon: const Icon(Icons.clear),
-                onPressed: () {
-                  _deviceSearchController.clear();
-                  setState(() => selectedDevice = null);
-                },
-              ),
-              onChanged: (value) {
-                final trimmedValue = value.trim();
-                if (selectedDevice != null && selectedDevice!.id != trimmedValue) {
-                  setState(() => selectedDevice = null);
-                }
-                setState(() {});
-              },
-              validator: (_) {
-                if (selectedDevice == null) return 'Debe seleccionar un dispositivo';
-                return null;
+           CustomTextFormField(
+            controller: _deviceSearchController,
+            textInputType: TextInputType.number,
+            label: 'Buscar por ID de dispositivo',
+            hintText: 'Por ejemplo: 001',
+            icon: Icons.search_rounded,
+            suffixIcon: IconButton(
+              icon: const Icon(Icons.clear),
+              onPressed: () {
+                _deviceSearchController.clear();
+                setState(() => selectedDevice = null);
               },
             ),
-            if (searchResults.isNotEmpty)
-              Container(
-                margin: const EdgeInsets.only(top: 5),
-                decoration: BoxDecoration(
-                  border: Border.all(color: colors.primary),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Column(
-                  children: searchResults.map((device) {
-                    return ListTile(
-                      title: Text(device.name),
-                      subtitle: Text('ID: ${device.id}'),
-                      trailing: Icon(device.type.icon, color: colors.primary),
-                      onTap: () {
-                        setState(() {
-                          selectedDevice = device;
-                          _deviceSearchController.text = device.id;
-                        });
-                      },
-                    );
-                  }).toList(),
+            onChanged: (value) {
+              final trimmedValue = value.trim();
+              if (selectedDevice != null && selectedDevice!.id != trimmedValue) {
+                setState(() => selectedDevice = null);
+              }
+              setState(() {});
+            },
+            validator: (_) {
+              if (selectedDevice == null) return 'Debe seleccionar un dispositivo';
+              return null;
+            },
+          ),
+
+          if (searchResults.isNotEmpty)
+            Container(
+              margin: const EdgeInsets.only(top: 5),
+              decoration: BoxDecoration(
+                border: Border.all(color: colors.primary),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Column(
+                children: searchResults.map((device) {
+                  return ListTile(
+                    title: Text(device.name),
+                    subtitle: Text('ID: ${device.id}'),
+                    trailing: Icon(device.type.icon, color: colors.primary),
+                    onTap: () {
+                      setState(() {
+                        selectedDevice = device;
+                        _deviceSearchController.text = device.id;
+                      });
+                    },
+                  );
+                }).toList(),
+              ),
+            ),
+
+            Row(
+              children: [
+                
+              ],
+            ),
+
+          if (selectedDevice != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: ListTile(
+                tileColor: colors.onInverseSurface,
+                leading: const Icon(Icons.check_circle, color: Colors.green),
+                title: Text(selectedDevice!.name),
+                subtitle: Text('ID: ${selectedDevice!.id}'),
+                trailing: IconButton(
+                  icon: const Icon(Icons.close, color: Colors.red),
+                  onPressed: () {
+                    setState(() {
+                      _deviceSearchController.clear();
+                      selectedDevice = null;
+                    });
+                  },
                 ),
               ),
+            ),
+
 
             FilledButton.tonalIcon(
               onPressed: isLoading
