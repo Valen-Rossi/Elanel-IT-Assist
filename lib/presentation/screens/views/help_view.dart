@@ -17,13 +17,22 @@ class HelpView extends ConsumerStatefulWidget {
 
 class HelpViewState extends ConsumerState<HelpView> {
 
+  late final TextEditingController _searchController;
+
   @override
   void initState() {
     super.initState();
+    _searchController = TextEditingController();
 
     ref.read(faqsProvider.notifier).loadFAQs();
-
   }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +60,12 @@ class HelpViewState extends ConsumerState<HelpView> {
         ),
         actions: [
           TextButton(
-            onPressed: () => filterNotifier.state = null,
+            onPressed: () {
+              filterNotifier.state = null;
+              ref.read(faqSearchTermProvider.notifier).state = '';
+              _searchController.clear();
+            },
+
             child: const Text('Limpiar filtros'),
           ),
           const SizedBox(width: 12),
@@ -59,6 +73,36 @@ class HelpViewState extends ConsumerState<HelpView> {
       ),
       body: Column(
         children: [
+
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            child: TextFormField(
+              controller: _searchController,
+              decoration: InputDecoration(
+                labelText: 'Buscar por título',
+                hintText: 'Ejemplo: impresora',
+                prefixIcon: const Icon(Icons.search),
+                suffixIcon: _searchController.text.isNotEmpty
+                    ? IconButton(
+                        icon: const Icon(Icons.clear),
+                        onPressed: () {
+                          _searchController.clear();
+                          ref.read(faqSearchTermProvider.notifier).state = '';
+                          setState(() {}); // Para que se actualice el icono
+                        },
+                      )
+                    : null,
+              ),
+              onChanged: (value) {
+                ref.read(faqSearchTermProvider.notifier).state = value;
+                setState(() {}); // Actualiza el ícono de borrado
+              },
+            ),
+          ),
+
+
+          const SizedBox(height: 8),
+
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             child: CustomDropdownFormField<FAQType?>(

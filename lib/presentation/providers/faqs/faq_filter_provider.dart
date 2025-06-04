@@ -3,12 +3,16 @@ import 'package:elanel_asistencia_it/domain/entities/faq.dart';
 import 'faqs_provider.dart';
 
 final faqFilterProvider = StateProvider<FAQType?>((ref) => null);
+final faqSearchTermProvider = StateProvider<String>((ref) => '');
 
 final filteredFaqsProvider = Provider<List<FAQ>>((ref) {
-  final filter = ref.watch(faqFilterProvider);
   final allFaqs = ref.watch(faqsProvider);
+  final selectedType = ref.watch(faqFilterProvider);
+  final searchTerm = ref.watch(faqSearchTermProvider).toLowerCase();
 
-  if (filter == null) return allFaqs;
-
-  return allFaqs.where((faq) => faq.type == filter).toList();
+  return allFaqs.where((faq) {
+    final matchesType = selectedType == null || faq.type == selectedType;
+    final matchesTitle = faq.title.toLowerCase().contains(searchTerm);
+    return matchesType && matchesTitle;
+  }).toList();
 });
