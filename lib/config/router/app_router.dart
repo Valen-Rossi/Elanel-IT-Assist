@@ -85,6 +85,12 @@ final appRouter = GoRouter(
         builder: (context, state) => const NewDeviceScreen(),
       ),
 
+      GoRoute(
+        path: '/ticket-qr-scan',
+        name: TicketQRScanScreen.name,
+        builder: (context, state) => const TicketQRScanScreen(),
+      ),
+
     ],
 
 );

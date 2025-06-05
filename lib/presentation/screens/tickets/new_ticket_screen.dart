@@ -1,3 +1,4 @@
+import 'package:elanel_asistencia_it/config/permissions/permissions_handler.dart';
 import 'package:elanel_asistencia_it/domain/entities/ticket.dart';
 import 'package:elanel_asistencia_it/domain/entities/device.dart';
 import 'package:elanel_asistencia_it/presentation/providers/providers.dart';
@@ -192,11 +193,49 @@ class _NewTicketViewState extends ConsumerState<_NewTicketView> {
 
                 FilledButton.tonalIcon(
                   label: Text('Escanear'),
-                  onPressed: () {
-                    
-                  }, 
+                  onPressed: () async {
+                    final granted = await PermissionsService.requestCameraPermission();
+
+                    if (context.mounted) {
+                      if (!granted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('No se pudo acceder a la cámara')),
+                        );
+                        await PermissionsService.openAppSettingsIfPermanentlyDenied();
+                        return;
+                      }
+
+                      // Ir a pantalla de escaneo y esperar el resultado
+                      final result = await context.push<String>('/ticket-qr-scan');
+
+                      if (result != null && result.isNotEmpty) {
+                        final devices = ref.read(devicesProvider);
+                        Device? matchedDevice;
+
+                        try {
+                          matchedDevice = devices.firstWhere((d) => d.id == result);
+                        } catch (_) {
+                          matchedDevice = null;
+                        }
+
+                        if (matchedDevice != null) {
+                          setState(() {
+                            selectedDevice = matchedDevice!;
+                            _deviceSearchController.text = matchedDevice.id;
+                          });
+                        } else {
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Dispositivo con ID "$result" no encontrado')),
+                            );
+                          }
+                        }
+                      }
+                    }
+                  },
                   icon: Icon(Icons.qr_code),
                 ),
+
 
                 FilledButton.tonalIcon(
                   label: Text('Agregar'),
