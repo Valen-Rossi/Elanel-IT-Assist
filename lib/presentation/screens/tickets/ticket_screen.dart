@@ -285,7 +285,7 @@ class _TicketViewState extends ConsumerState<_TicketView> {
             ),
           ),
       
-          // Spacer(),
+          SizedBox(height: 27),
       
           widget.ticket.status!= TicketStatus.resolved && widget.technician!=null
           ?SizedBox(
@@ -295,11 +295,22 @@ class _TicketViewState extends ConsumerState<_TicketView> {
               ),
               onPressed: () async{
                 if(widget.ticket.status!= TicketStatus.inProgress){
+                  
                   final updatedTicket =
                       widget.ticket.copyWith(status: TicketStatus.inProgress);
+                  
                   await ref
                       .read(recentTicketsProvider.notifier)
                       .updateTicket(updatedTicket);
+
+                  if(context.mounted){
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: const Text('El ticket ha sido abierto con éxito.'),
+                        backgroundColor: colors.primary,
+                      ),
+                    );
+                  }
                 }
                 else {
                   final updatedTicket =
@@ -307,12 +318,23 @@ class _TicketViewState extends ConsumerState<_TicketView> {
                   await ref
                       .read(recentTicketsProvider.notifier)
                       .updateTicket(updatedTicket);
+                  if(context.mounted){
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: const Text('El ticket ha sido cerrado con éxito.'),
+                        backgroundColor: colors.primary,
+                      ),
+                    );
+                  }
                 }
               }, 
               child: Text(
                 widget.ticket.status!= TicketStatus.inProgress
                 ?'Abrir Ticket'
-                :'Cerrar Ticket'
+                :'Cerrar Ticket',
+                style: TextStyle(
+                  fontWeight: FontWeight.w700
+                ),
                 )
             ),
           )
