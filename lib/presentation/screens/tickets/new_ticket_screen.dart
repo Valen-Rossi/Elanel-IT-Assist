@@ -162,7 +162,18 @@ class _NewTicketViewState extends ConsumerState<_NewTicketView> {
                   return ListTile(
                     title: Text(device.name),
                     subtitle: Text('ID: ${device.id}'),
-                    trailing: Icon(device.type.icon, color: colors.primary),
+                    trailing: selectedDevice!=null
+                      ? IconButton(
+                        icon: Icon(Icons.clear), 
+                        onPressed: () { 
+                          setState(() {
+                            _deviceSearchController.clear();
+                            selectedDevice = null;
+                          });
+                        },
+                      )
+                      :null,
+                    leading: Icon(device.type.icon, color: colors.primary),
                     onTap: () {
                       setState(() {
                         selectedDevice = device;
@@ -208,28 +219,7 @@ class _NewTicketViewState extends ConsumerState<_NewTicketView> {
               ],
             ),
 
-          if (selectedDevice != null)
-            Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: ListTile(
-                tileColor: colors.onInverseSurface,
-                leading: const Icon(Icons.check_circle, color: Colors.green),
-                title: Text(selectedDevice!.name),
-                subtitle: Text('ID: ${selectedDevice!.id}'),
-                trailing: IconButton(
-                  icon: const Icon(Icons.close, color: Colors.red),
-                  onPressed: () {
-                    setState(() {
-                      _deviceSearchController.clear();
-                      selectedDevice = null;
-                    });
-                  },
-                ),
-              ),
-            ),
-
-
-            FilledButton.tonalIcon(
+            FilledButton.icon(
               onPressed: isLoading
                   ? null
                   : () async {
@@ -274,8 +264,13 @@ class _NewTicketViewState extends ConsumerState<_NewTicketView> {
                         );
                       }
                     },
-              label: const Text('Crear Ticket'),
-              icon: const Icon(Icons.add),
+              label: const Text(
+                'Crear Ticket',
+                style: TextStyle(
+                  fontWeight: FontWeight.w700
+                ),
+              ),
+              icon: const Icon(Icons.confirmation_num_outlined),
             ),
           ],
         ),

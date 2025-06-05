@@ -123,7 +123,7 @@ class NewFAQScreenState extends ConsumerState<NewFAQScreen> {
 
 
 
-              FilledButton.tonalIcon(
+              FilledButton.icon(
                 onPressed: () async {
                   final isValid = _formKey.currentState!.validate();
                   if (!isValid || isLoading) return;
@@ -156,7 +156,12 @@ class NewFAQScreenState extends ConsumerState<NewFAQScreen> {
                   }
                 },
                 icon: const Icon(Icons.save),
-                label: const Text('Guardar'),
+                label: const Text(
+                  'Guardar',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w700
+                  ),
+                ),
               ),
             ],
           ),

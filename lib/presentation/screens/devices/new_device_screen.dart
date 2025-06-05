@@ -92,7 +92,7 @@ class _NewDeviceViewState extends ConsumerState<_NewDeviceView> {
           ),
 
 
-          FilledButton.tonalIcon(
+          FilledButton.icon(
             onPressed: () async {
               final isValid = _formKey.currentState!.validate();
               if (!isValid || isLoading) return;
@@ -126,8 +126,13 @@ class _NewDeviceViewState extends ConsumerState<_NewDeviceView> {
               }
             },
 
-            label: const Text('Guardar'),
-            icon: const Icon(Icons.add),
+            label: const Text(
+              'Guardar',
+              style: TextStyle(
+                fontWeight: FontWeight.w700
+              ),
+            ),
+            icon: const Icon(Icons.save),
           ),
       ],
       ),
