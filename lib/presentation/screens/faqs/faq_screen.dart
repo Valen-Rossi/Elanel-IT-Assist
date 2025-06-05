@@ -68,37 +68,38 @@ class _InfoFAQ extends StatelessWidget {
       physics: const BouncingScrollPhysics(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 15,
         children: [
 
           Text(
             faq.title,
             textAlign: TextAlign.left,
             style: TextStyle(
-              fontSize: 20,
+              fontSize: 27,
               fontWeight: FontWeight.w700,
               color: colors.primary,
             ),
           ),
 
-          const SizedBox(height: 10),
-
           Container(
+            alignment: Alignment.center,
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             decoration: BoxDecoration(
               color: colors.inversePrimary,
               borderRadius: BorderRadius.circular(20),
             ),
-            child: Text(faq.type.label),
+            child: Text(
+              faq.type.label,
+              style: TextStyle(fontWeight: FontWeight.w700),
+            ),
           ),
-
-          const SizedBox(height: 10),
 
           MarkdownBody(
             data: faq.description,
             softLineBreak: true,
             selectable: true,
             styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
-              p: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+              p: const TextStyle(fontSize: 17, fontWeight: FontWeight.w300),
             ),
           ),
 
