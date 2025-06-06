@@ -1,15 +1,15 @@
-import 'package:elanel_asistencia_it/domain/entities/device.dart';
-import 'package:elanel_asistencia_it/presentation/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:timeline_tile/timeline_tile.dart';
-
-import 'package:elanel_asistencia_it/presentation/providers/providers.dart';
-import 'package:elanel_asistencia_it/domain/entities/user.dart';
-import 'package:elanel_asistencia_it/domain/entities/ticket.dart';
 import 'package:vibration/vibration.dart';
 import 'package:vibration/vibration_presets.dart';
+
+import 'package:elanel_asistencia_it/presentation/providers/providers.dart';
+import 'package:elanel_asistencia_it/domain/entities/device.dart';
+import 'package:elanel_asistencia_it/presentation/widgets/widgets.dart';
+import 'package:elanel_asistencia_it/domain/entities/user.dart';
+import 'package:elanel_asistencia_it/domain/entities/ticket.dart';
 
 class TicketScreen extends ConsumerWidget {
   static const name = 'ticket-screen';
@@ -197,7 +197,7 @@ class _TicketViewState extends ConsumerState<_TicketView> {
                               .updateTicket(updatedTicket);
 
                           if (await Vibration.hasVibrator()) {
-                            Vibration.vibrate(preset: VibrationPreset.doubleBuzz); // 100ms
+                            Vibration.vibrate(preset: VibrationPreset.singleShortBuzz); // 100ms
                           }
                         }
                       },
