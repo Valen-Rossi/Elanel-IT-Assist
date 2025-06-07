@@ -131,6 +131,7 @@ class _NewTicketViewState extends ConsumerState<_NewTicketView> {
               label: 'Otra Categoría',
               hintText: 'Por ejemplo: Celular personal',
               icon: Icons.devices_other,
+              textCapitalization: TextCapitalization.words,
               onChanged: (value) => otherCategory = value.trim(),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) return 'El nombre de la otra es requerida';
