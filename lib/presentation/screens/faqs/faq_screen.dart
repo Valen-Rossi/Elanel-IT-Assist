@@ -85,12 +85,15 @@ class _InfoFAQ extends StatelessWidget {
             alignment: Alignment.center,
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             decoration: BoxDecoration(
-              color: colors.inversePrimary,
+              color: faq.type.color,
               borderRadius: BorderRadius.circular(20),
             ),
             child: Text(
               faq.type.label,
-              style: TextStyle(fontWeight: FontWeight.w700),
+              style: TextStyle(
+                color: faq.type.color.withAlpha(255),
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ),
 

@@ -42,15 +42,15 @@ extension FAQTypeColor on FAQType {
   Color get color {
     switch (this) {
       case FAQType.hardware:
-        return Colors.lightBlue.shade400;
+        return const Color.fromARGB(36, 80, 255, 208);
       case FAQType.software:
-        return Colors.deepOrange.shade400;
+        return const Color.fromRGBO(224, 113, 255, 0.141);
       case FAQType.account:
-        return Colors.lightGreen.shade400;
+        return const Color.fromARGB(37, 36, 196, 218);
       case FAQType.network:
-        return Colors.blueGrey.shade400;
+        return const Color.fromARGB(31, 98, 195, 255);
       case FAQType.other:
-        return Colors.grey.shade400;
+        return const Color.fromARGB(37, 189, 189, 189);
     }
   }
 }

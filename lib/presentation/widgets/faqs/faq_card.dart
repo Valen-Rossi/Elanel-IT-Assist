@@ -58,10 +58,16 @@ class FAQCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                   decoration: BoxDecoration(
-                    color: colors.inversePrimary,
+                    color: faq.type.color,
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: Text(faq.type.label),
+                  child: Text(
+                    faq.type.label,
+                    style: TextStyle(
+                      color: faq.type.color.withAlpha(255),
+                      fontWeight: FontWeight.w700
+                    ),
+                  ),
                 ),
 
               ],
