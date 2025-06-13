@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 enum TicketStatus { newTicket, inProgress, resolved }
 enum TicketPriority { low, medium, high }
 enum TicketCategory {
@@ -21,6 +22,10 @@ class Ticket {
   final String deviceId;
   final String technicianId;
   final DateTime createdAt;
+  final DateTime asssignedAt;
+  final DateTime openedAt;
+  final DateTime closedAt;
+  final bool hasFeedback;
 
   Ticket({
     required this.id,
@@ -33,6 +38,10 @@ class Ticket {
     required this.deviceId,
     required this.technicianId,
     required this.createdAt,
+    required this.asssignedAt,
+    required this.openedAt,
+    required this.closedAt,
+    required this.hasFeedback,
   });
 
 }
@@ -42,6 +51,10 @@ extension TicketCopy on Ticket {
     String? technicianId,
     TicketPriority? priority,
     TicketStatus? status,
+    DateTime? asssignedAt,
+    DateTime? openedAt,
+    DateTime? closedAt,
+    bool? hasFeedback,
     // otros campos si querés
   }) {
     return Ticket(
@@ -55,6 +68,10 @@ extension TicketCopy on Ticket {
       deviceId: deviceId,
       technicianId: technicianId ?? this.technicianId,
       createdAt: createdAt,
+      asssignedAt: asssignedAt ?? this.asssignedAt,
+      openedAt: openedAt ?? this.openedAt,
+      closedAt: closedAt ?? this.closedAt,
+      hasFeedback: hasFeedback ?? this.hasFeedback,
     );
   }
 

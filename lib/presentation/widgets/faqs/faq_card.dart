@@ -1,4 +1,3 @@
-import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:elanel_asistencia_it/domain/entities/faq.dart';

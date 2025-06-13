@@ -7,8 +7,8 @@ import 'package:elanel_asistencia_it/domain/entities/ticket.dart';
 import 'package:vibration/vibration.dart';
 import 'package:vibration/vibration_presets.dart';
 
-class InfoTicket extends ConsumerStatefulWidget {
-  const InfoTicket({
+class InfoTicketCard extends ConsumerStatefulWidget {
+  const InfoTicketCard({
     super.key,
     required this.size,
     required this.ticket,
@@ -20,10 +20,10 @@ class InfoTicket extends ConsumerStatefulWidget {
   final ColorScheme colors;
 
   @override
-  InfoTicketState createState() => InfoTicketState();
+  InfoTicketCardState createState() => InfoTicketCardState();
 }
 
-class InfoTicketState extends ConsumerState<InfoTicket> {
+class InfoTicketCardState extends ConsumerState<InfoTicketCard> {
   @override
   Widget build(BuildContext context) {
     return Container(

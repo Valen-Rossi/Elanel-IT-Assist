@@ -313,6 +313,10 @@ class _NewTicketViewState extends ConsumerState<_NewTicketView> {
                         deviceId: selectedDevice!.id,
                         technicianId: '',
                         createdAt: DateTime.now(),
+                        asssignedAt: DateTime.now(),
+                        openedAt: DateTime.now(),
+                        closedAt: DateTime.now(),
+                        hasFeedback: false,
                       );
 
                       final updatedDevice = Device(

@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:timeline_tile/timeline_tile.dart';
 import 'package:vibration/vibration.dart';
 import 'package:vibration/vibration_presets.dart';
 
-import 'package:elanel_asistencia_it/presentation/providers/providers.dart';
 import 'package:elanel_asistencia_it/domain/entities/device.dart';
-import 'package:elanel_asistencia_it/presentation/widgets/widgets.dart';
-import 'package:elanel_asistencia_it/domain/entities/user.dart';
 import 'package:elanel_asistencia_it/domain/entities/ticket.dart';
+import 'package:elanel_asistencia_it/domain/entities/user.dart';
+import 'package:elanel_asistencia_it/presentation/providers/providers.dart';
+import 'package:elanel_asistencia_it/presentation/widgets/widgets.dart';
 
 class TicketScreen extends ConsumerWidget {
   static const name = 'ticket-screen';
@@ -25,8 +23,8 @@ class TicketScreen extends ConsumerWidget {
     final User? technician = (ticket.technicianId != '')
         ? ref.watch(userByIdProvider(ticket.technicianId))
         : null;
-    
-    final Device device =ref.watch(deviceByIdProvider(ticket.deviceId));
+
+    final Device device = ref.watch(deviceByIdProvider(ticket.deviceId));
 
     final colors = Theme.of(context).colorScheme;
 
@@ -41,7 +39,12 @@ class TicketScreen extends ConsumerWidget {
           ),
         ),
       ),
-      body: _TicketView(ticket: ticket, technician: technician, users: users, device: device,),
+      body: _TicketView(
+        ticket: ticket,
+        technician: technician,
+        users: users,
+        device: device,
+      ),
     );
   }
 }
@@ -75,286 +78,61 @@ class _TicketViewState extends ConsumerState<_TicketView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          InfoTicket(size: size, ticket: widget.ticket, colors: colors),
-      
-          // Paso 1: Ticket creado
-          TimelineTile(
-            isFirst: true,
-            indicatorStyle: IndicatorStyle(
-              width: 30,
-              height: 30,
-              indicator: CircleAvatar(
-                backgroundColor: colors.surface,
-                child: Icon(
-                  Icons.check_circle,
-                  color: colors.primary,
-                  size: 32,
-                ),
-              ),
-            ),
-            afterLineStyle: LineStyle(color: Colors.grey.shade700, thickness: 2),
-            endChild: SizedBox(
-              height: 120,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 8),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Text(
-                      'Ticket creado',
-                      style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w500,
-                        color: colors.primary,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    FilledButton.tonalIcon(
-                      icon: Icon(widget.device.type.icon),
-                      label: Text(widget.device.name),
-                      style: ButtonStyle(visualDensity: VisualDensity.compact),
-                      onPressed: () {
-                        context.push('/device/${widget.device.id}');
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            ),
+          // Información del ticket
+          InfoTicketCard(size: size, ticket: widget.ticket, colors: colors),
+
+          // Timeline separado en otro widget
+          InfoTicketTimeline(
+            ticket: widget.ticket,
+            technician: widget.technician,
+            users: widget.users,
+            device: widget.device,
           ),
-      
-          // Paso 2: Técnico asignado
-          TimelineTile(
-            indicatorStyle: IndicatorStyle(
-              width: 30,
-              height: 30,
-              indicator: CircleAvatar(
-                backgroundColor: colors.surface,
-                child: Icon(
-                  Icons.account_circle,
-                  size: 32,
-                  color: widget.ticket.technicianId != ''
-                      ? colors.primary
-                      : colors.secondary,
-                ),
-              ),
-            ),
-            beforeLineStyle: LineStyle(color: Colors.grey.shade700, thickness: 2),
-            afterLineStyle: LineStyle(color: Colors.grey.shade700, thickness: 2),
-            endChild: SizedBox(
-              height: 120,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 8),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Text(
-                      'Técnico asignado',
-                      style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w500,
-                        color: colors.primary,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    FilledButton.tonalIcon(
-                      style: ButtonStyle(visualDensity: VisualDensity.compact),
-                      onPressed: () async {
-                        final selectedTech = await showDialog<User>(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title: const Text('Seleccionar técnico'),
-                              content: SizedBox(
-                                width: double.maxFinite,
-                                child: ListView.separated(
-                                  separatorBuilder: (_, __) => const Divider(),
-                                  shrinkWrap: true,
-                                  itemCount: widget.users.length,
-                                  itemBuilder: (_, i) {
-                                    final user = widget.users[i];
-                                    return ListTile(
-                                      visualDensity: VisualDensity.compact,
-                                      leading: Icon(Icons.person, color: colors.primary),
-                                      title: Text(user.name),
-                                      onTap: () => Navigator.pop(context, user),
-                                    );
-                                  },
-                                ),
-                              ),
-                            );
-                          },
+          
+          widget.ticket.status != TicketStatus.resolved && widget.technician != null
+              ? Padding(
+                padding: const EdgeInsets.only(top: 27),
+                child: SizedBox(
+                  width: size.width,
+                  child: FilledButton(
+                    onPressed: () async {
+                      final newStatus = widget.ticket.status != TicketStatus.inProgress
+                          ? TicketStatus.inProgress
+                          : TicketStatus.resolved;
+                
+                      final updatedTicket = widget.ticket.copyWith(status: newStatus);
+                      await ref.read(recentTicketsProvider.notifier).updateTicket(updatedTicket);
+                
+                      if (await Vibration.hasVibrator()) {
+                        Vibration.vibrate(preset: VibrationPreset.singleShortBuzz);
+                      }
+                
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              newStatus == TicketStatus.inProgress
+                                  ? 'El ticket ha sido abierto con éxito.'
+                                  : 'El ticket ha sido cerrado con éxito.',
+                            ),
+                            backgroundColor: colors.primary,
+                          ),
                         );
-      
-                        if (selectedTech != null) {
-                          
-                          final updatedTicket =
-                              widget.ticket.copyWith(technicianId: selectedTech.id);
-                          await ref
-                              .read(recentTicketsProvider.notifier)
-                              .updateTicket(updatedTicket);
-
-                          if (await Vibration.hasVibrator()) {
-                            Vibration.vibrate(preset: VibrationPreset.singleShortBuzz); // 100ms
-                          }
-                        }
-                      },
-                      icon: Icon(Icons.person),
-                      label: widget.technician != null
-                          ? Text(widget.technician!.name)
-                          : const Text('Asignar técnico'),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-      
-          // Paso 3: En curso
-          TimelineTile(
-            indicatorStyle: IndicatorStyle(
-              width: 30,
-              height: 30,
-              indicator: CircleAvatar(
-                backgroundColor: colors.surface,
-                child: Icon(
-                  Icons.timelapse,
-                  size: 32,
-                  color: (widget.ticket.status == TicketStatus.inProgress ||
-                          widget.ticket.status == TicketStatus.resolved)
-                      ? colors.primary
-                      : colors.secondary,
-                ),
-              ),
-            ),
-            beforeLineStyle: LineStyle(color: Colors.grey.shade700, thickness: 2),
-            afterLineStyle: LineStyle(color: Colors.grey.shade700, thickness: 2),
-            endChild: SizedBox(
-              height: 100,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 8),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'En curso',
-                    style: TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.w500,
-                      color: (widget.ticket.status == TicketStatus.inProgress ||
-                              widget.ticket.status == TicketStatus.resolved)
-                          ? colors.primary
-                          : colors.secondary,
+                      }
+                    },
+                    child: Text(
+                      widget.ticket.status != TicketStatus.inProgress
+                          ? 'Abrir Ticket'
+                          : 'Cerrar Ticket',
+                      style: const TextStyle(fontWeight: FontWeight.w700),
                     ),
                   ),
                 ),
-              ),
-            ),
-          ),
-      
-          // Paso 4: Resuelto
-          TimelineTile(
-            isLast: true,
-            indicatorStyle: IndicatorStyle(
-              width: 30,
-              height: 30,
-              indicator: CircleAvatar(
-                backgroundColor: colors.surface,
-                child: Icon(
-                  Icons.check_circle,
-                  size: 32,
-                  color: widget.ticket.status == TicketStatus.resolved
-                      ? colors.primary
-                      : colors.secondary,
-                ),
-              ),
-            ),
-            beforeLineStyle: LineStyle(color: Colors.grey.shade700, thickness: 2),
-            endChild: SizedBox(
-              height: 100,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 8),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Resuelto',
-                    style: TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.w500,
-                      color: widget.ticket.status == TicketStatus.resolved
-                          ? colors.primary
-                          : colors.secondary,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-      
-          SizedBox(height: 27),
-      
-          widget.ticket.status!= TicketStatus.resolved && widget.technician!=null
-          ?SizedBox(
-            width: size.width,
-            child: FilledButton(
-              style: ButtonStyle(
-              ),
-              onPressed: () async{
-                if(widget.ticket.status!= TicketStatus.inProgress){
-                  
-                  final updatedTicket =
-                      widget.ticket.copyWith(status: TicketStatus.inProgress);
-                  
-                  await ref
-                      .read(recentTicketsProvider.notifier)
-                      .updateTicket(updatedTicket);
+              )
+              : widget.ticket.hasFeedback
+                ? FeedbackCard(feedbackId: widget.ticket.id)
+                : const Text('Este ticket no tiene feedback'),
 
-                  if (await Vibration.hasVibrator()) {
-                    Vibration.vibrate(preset: VibrationPreset.singleShortBuzz); // 100ms
-                  }
-  
-                  if(context.mounted){
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: const Text('El ticket ha sido abierto con éxito.'),
-                        backgroundColor: colors.primary,
-                      ),
-                    );
-                  }
-                }
-                else {
-                  final updatedTicket =
-                      widget.ticket.copyWith(status: TicketStatus.resolved);
-                  await ref
-                      .read(recentTicketsProvider.notifier)
-                      .updateTicket(updatedTicket);
-
-                  if (await Vibration.hasVibrator()) {
-                    Vibration.vibrate(preset: VibrationPreset.singleShortBuzz); // 100ms
-                  }
-                  if(context.mounted){
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: const Text('El ticket ha sido cerrado con éxito.'),
-                        backgroundColor: colors.primary,
-                      ),
-                    );
-                  }
-                }
-              }, 
-              child: Text(
-                widget.ticket.status!= TicketStatus.inProgress
-                ?'Abrir Ticket'
-                :'Cerrar Ticket',
-                style: TextStyle(
-                  fontWeight: FontWeight.w700
-                ),
-                )
-            ),
-          )
-          :SizedBox()
-      
         ],
       ),
     );

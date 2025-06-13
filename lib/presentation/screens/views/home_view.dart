@@ -22,6 +22,7 @@ class HomeViewState extends ConsumerState<HomeView> {
     ref.read(recentTicketsProvider.notifier).loadTickets();
     ref.read(usersProvider.notifier).loadUsers();
     ref.read(devicesProvider.notifier).loadDevices();
+    ref.read(feedbacksProvider.notifier).loadFeedbacks();
 
   }
 

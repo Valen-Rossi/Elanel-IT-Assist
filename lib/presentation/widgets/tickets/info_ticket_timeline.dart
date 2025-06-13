@@ -1,0 +1,244 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:timeline_tile/timeline_tile.dart';
+import 'package:vibration/vibration.dart';
+import 'package:vibration/vibration_presets.dart';
+
+import 'package:elanel_asistencia_it/domain/entities/ticket.dart';
+import 'package:elanel_asistencia_it/domain/entities/user.dart';
+import 'package:elanel_asistencia_it/domain/entities/device.dart';
+import 'package:elanel_asistencia_it/presentation/providers/providers.dart';
+
+class InfoTicketTimeline extends ConsumerWidget {
+  final Ticket ticket;
+  final User? technician;
+  final List<User> users;
+  final Device device;
+
+  const InfoTicketTimeline({
+    super.key,
+    required this.ticket,
+    required this.technician,
+    required this.users,
+    required this.device,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final colors = Theme.of(context).colorScheme;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Paso 1: Ticket creado
+        TimelineTile(
+          isFirst: true,
+          indicatorStyle: IndicatorStyle(
+            width: 30,
+            height: 30,
+            indicator: CircleAvatar(
+              backgroundColor: colors.surface,
+              child: Icon(
+                Icons.check_circle,
+                color: colors.primary,
+                size: 32,
+              ),
+            ),
+          ),
+          afterLineStyle: LineStyle(color: Colors.grey.shade700, thickness: 2),
+          endChild: SizedBox(
+            height: 120,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(
+                    'Ticket creado',
+                    style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.w500,
+                      color: colors.primary,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  FilledButton.tonalIcon(
+                    icon: Icon(device.type.icon),
+                    label: Text(device.name),
+                    style: ButtonStyle(visualDensity: VisualDensity.compact),
+                    onPressed: () => context.push('/device/${device.id}'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+
+        // Paso 2: Técnico asignado
+        TimelineTile(
+          indicatorStyle: IndicatorStyle(
+            width: 30,
+            height: 30,
+            indicator: CircleAvatar(
+              backgroundColor: colors.surface,
+              child: Icon(
+                Icons.account_circle,
+                size: 32,
+                color: ticket.technicianId != '' ? colors.primary : colors.secondary,
+              ),
+            ),
+          ),
+          beforeLineStyle: LineStyle(color: Colors.grey.shade700, thickness: 2),
+          afterLineStyle: LineStyle(color: Colors.grey.shade700, thickness: 2),
+          endChild: SizedBox(
+            height: 120,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(
+                    'Técnico asignado',
+                    style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.w500,
+                      color: colors.primary,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  FilledButton.tonalIcon(
+                    style: ButtonStyle(visualDensity: VisualDensity.compact),
+                    onPressed: () async {
+                      final selectedTech = await showDialog<User>(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: const Text('Seleccionar técnico'),
+                            content: SizedBox(
+                              width: double.maxFinite,
+                              child: ListView.separated(
+                                separatorBuilder: (_, __) => const Divider(),
+                                shrinkWrap: true,
+                                itemCount: users.length,
+                                itemBuilder: (_, i) {
+                                  final user = users[i];
+                                  return ListTile(
+                                    visualDensity: VisualDensity.compact,
+                                    leading: Icon(Icons.person, color: colors.primary),
+                                    title: Text(user.name),
+                                    onTap: () => Navigator.pop(context, user),
+                                  );
+                                },
+                              ),
+                            ),
+                          );
+                        },
+                      );
+
+                      if (selectedTech != null) {
+                        final updatedTicket = ticket.copyWith(technicianId: selectedTech.id);
+                        await ref.read(recentTicketsProvider.notifier).updateTicket(updatedTicket);
+
+                        if (await Vibration.hasVibrator()) {
+                          Vibration.vibrate(preset: VibrationPreset.singleShortBuzz);
+                        }
+                      }
+                    },
+                    icon: Icon(Icons.person),
+                    label: technician != null
+                        ? Text(technician!.name)
+                        : const Text('Asignar técnico'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+
+        // Paso 3: En curso
+        TimelineTile(
+          indicatorStyle: IndicatorStyle(
+            width: 30,
+            height: 30,
+            indicator: CircleAvatar(
+              backgroundColor: colors.surface,
+              child: Icon(
+                Icons.timelapse,
+                size: 32,
+                color: (ticket.status == TicketStatus.inProgress ||
+                        ticket.status == TicketStatus.resolved)
+                    ? colors.primary
+                    : colors.secondary,
+              ),
+            ),
+          ),
+          beforeLineStyle: LineStyle(color: Colors.grey.shade700, thickness: 2),
+          afterLineStyle: LineStyle(color: Colors.grey.shade700, thickness: 2),
+          endChild: SizedBox(
+            height: 100,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 8),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'En curso',
+                  style: TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w500,
+                    color: (ticket.status == TicketStatus.inProgress ||
+                            ticket.status == TicketStatus.resolved)
+                        ? colors.primary
+                        : colors.secondary,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+
+        // Paso 4: Resuelto
+        TimelineTile(
+          isLast: true,
+          indicatorStyle: IndicatorStyle(
+            width: 30,
+            height: 30,
+            indicator: CircleAvatar(
+              backgroundColor: colors.surface,
+              child: Icon(
+                Icons.check_circle,
+                size: 32,
+                color: ticket.status == TicketStatus.resolved
+                    ? colors.primary
+                    : colors.secondary,
+              ),
+            ),
+          ),
+          beforeLineStyle: LineStyle(color: Colors.grey.shade700, thickness: 2),
+          endChild: SizedBox(
+            height: 100,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 8),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Resuelto',
+                  style: TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w500,
+                    color: ticket.status == TicketStatus.resolved
+                        ? colors.primary
+                        : colors.secondary,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+
+      ],
+    );
+  }
+}
