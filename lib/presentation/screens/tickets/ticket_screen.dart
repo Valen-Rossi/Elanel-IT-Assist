@@ -40,7 +40,7 @@ class TicketScreen extends ConsumerWidget {
         ),
       ),
       body: _TicketView(
-        ticket: ticket,
+        ticketId: ticket.id,
         technician: technician,
         users: users,
         device: device,
@@ -51,13 +51,13 @@ class TicketScreen extends ConsumerWidget {
 
 class _TicketView extends ConsumerStatefulWidget {
   const _TicketView({
-    required this.ticket,
+    required this.ticketId,
     required this.users,
     this.technician,
     required this.device,
   });
 
-  final Ticket ticket;
+  final String ticketId;
   final List<User> users;
   final User? technician;
   final Device device;
@@ -72,67 +72,69 @@ class _TicketViewState extends ConsumerState<_TicketView> {
     final size = MediaQuery.of(context).size;
     final colors = Theme.of(context).colorScheme;
 
+    // ✅ Ticket actualizado dinámicamente
+    final ticket = ref.watch(ticketByIdProvider(widget.ticketId));
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
       physics: const BouncingScrollPhysics(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Información del ticket
-          InfoTicketCard(size: size, ticket: widget.ticket, colors: colors),
+          InfoTicketCard(size: size, ticket: ticket, colors: colors),
 
-          // Timeline separado en otro widget
           InfoTicketTimeline(
-            ticket: widget.ticket,
+            ticket: ticket,
             technician: widget.technician,
             users: widget.users,
             device: widget.device,
           ),
-          
-          widget.ticket.status != TicketStatus.resolved && widget.technician != null
-              ? Padding(
-                padding: const EdgeInsets.only(top: 27),
-                child: SizedBox(
-                  width: size.width,
-                  child: FilledButton(
-                    onPressed: () async {
-                      final newStatus = widget.ticket.status != TicketStatus.inProgress
-                          ? TicketStatus.inProgress
-                          : TicketStatus.resolved;
-                
-                      final updatedTicket = widget.ticket.copyWith(status: newStatus);
-                      await ref.read(recentTicketsProvider.notifier).updateTicket(updatedTicket);
-                
-                      if (await Vibration.hasVibrator()) {
-                        Vibration.vibrate(preset: VibrationPreset.singleShortBuzz);
-                      }
-                
-                      if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              newStatus == TicketStatus.inProgress
-                                  ? 'El ticket ha sido abierto con éxito.'
-                                  : 'El ticket ha sido cerrado con éxito.',
-                            ),
-                            backgroundColor: colors.primary,
-                          ),
-                        );
-                      }
-                    },
-                    child: Text(
-                      widget.ticket.status != TicketStatus.inProgress
-                          ? 'Abrir Ticket'
-                          : 'Cerrar Ticket',
-                      style: const TextStyle(fontWeight: FontWeight.w700),
-                    ),
-                  ),
-                ),
-              )
-              : widget.ticket.hasFeedback
-                ? FeedbackCard(feedbackId: widget.ticket.id)
-                : const Text('Este ticket no tiene feedback'),
 
+          const SizedBox(height: 20),
+
+          // ✅ Usamos el ticket actualizado dinámicamente
+          ticket.status != TicketStatus.resolved && widget.technician != null
+          ? SizedBox(
+              width: size.width,
+              child: FilledButton(
+                onPressed: () async {
+                  final newStatus = ticket.status != TicketStatus.inProgress
+                      ? TicketStatus.inProgress
+                      : TicketStatus.resolved;
+
+                  final updatedTicket = ticket.copyWith(status: newStatus);
+                  await ref.read(recentTicketsProvider.notifier).updateTicket(updatedTicket);
+
+                  if (await Vibration.hasVibrator()) {
+                    Vibration.vibrate(preset: VibrationPreset.singleShortBuzz);
+                  }
+
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          newStatus == TicketStatus.inProgress
+                              ? 'El ticket ha sido abierto con éxito.'
+                              : 'El ticket ha sido cerrado con éxito.',
+                        ),
+                        backgroundColor: colors.primary,
+                      ),
+                    );
+                  }
+                },
+                child: Text(
+                  ticket.status != TicketStatus.inProgress
+                      ? 'Abrir Ticket'
+                      : 'Cerrar Ticket',
+                  style: const TextStyle(fontWeight: FontWeight.w700),
+                ),
+              ),
+            )
+          : ticket.hasFeedback
+              ? FeedbackCard(feedbackId: ticket.id)
+              : ticket.status == TicketStatus.resolved
+                ? NewFeedbackCard(ticket: ticket)
+                : const SizedBox.shrink(),
         ],
       ),
     );
