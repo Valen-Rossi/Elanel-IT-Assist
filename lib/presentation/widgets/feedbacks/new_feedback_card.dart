@@ -31,11 +31,14 @@ class NewFeedbackCardState extends ConsumerState<NewFeedbackCard> {
     });
   }
 
-  Future<void> _submitFeedback() async {
+  Future<void> _submitFeedback(ColorScheme colors) async {
     if (_rating == 0.0) {
       Vibration.vibrate(preset: VibrationPreset.doubleBuzz);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Por favor seleccioná una calificación')),
+        SnackBar(
+          content: Text('Por favor seleccioná una calificación'),
+          backgroundColor: colors.error,
+        ),
       );
       return;
     }
@@ -55,7 +58,10 @@ class NewFeedbackCardState extends ConsumerState<NewFeedbackCard> {
       if (mounted) {
         Vibration.vibrate(preset: VibrationPreset.singleShortBuzz);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('¡Feedback enviado con éxito!')),
+          SnackBar(
+            content: Text('¡Feedback enviado con éxito!'),
+            backgroundColor: colors.primary,
+          ),
         );
       }
       setState(() {
@@ -135,7 +141,7 @@ class NewFeedbackCardState extends ConsumerState<NewFeedbackCard> {
 
           // Botón enviar
           ElevatedButton.icon(
-            onPressed: isSubmitting ? null : _submitFeedback,
+            onPressed: isSubmitting ? null : () => _submitFeedback(colors),
             icon: const Icon(Icons.send),
             label: isSubmitting
                 ? const CircularProgressIndicator()
