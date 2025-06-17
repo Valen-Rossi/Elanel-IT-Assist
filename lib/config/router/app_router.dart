@@ -58,6 +58,11 @@ final appRouter = GoRouter(
           ),
 
           GoRoute(
+            path: '/users',
+            builder: (context, state) => const UsersView(),
+          ),
+
+          GoRoute(
             path: '/inventary',
             builder: (context, state) => const InventaryView(),
           ),

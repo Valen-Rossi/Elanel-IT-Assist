@@ -15,10 +15,12 @@ class CustomBottomNavigationBar extends StatelessWidget {
         return 0;
       case '/tickets':
         return 1;
-      case '/inventary':
+      case '/users':
         return 2;
-      case '/help':
+      case '/inventary':
         return 3;
+      case '/help':
+        return 4;
       default:
         return 0;
     }
@@ -39,9 +41,12 @@ class CustomBottomNavigationBar extends StatelessWidget {
             context.go('/tickets');
             break;
           case 2:
-            context.go('/inventary');
+            context.go('/users');
             break;
           case 3:
+            context.go('/inventary');
+            break;
+          case 4:
             context.go('/help');
             break;
         }
@@ -54,6 +59,10 @@ class CustomBottomNavigationBar extends StatelessWidget {
         BottomNavigationBarItem(
           icon: Icon(Icons.confirmation_num_outlined),
           label: 'Tickets',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.person_2_rounded),
+          label: 'Usuarios',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.inventory_2_outlined),

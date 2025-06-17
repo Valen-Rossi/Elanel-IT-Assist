@@ -9,3 +9,4 @@ export 'shared/custom_text_form_field.dart';
 export 'tickets/info_ticket_card.dart';
 export 'tickets/info_ticket_timeline.dart';
 export 'tickets/ticket_card.dart';
+export 'users/user_card.dart';

@@ -42,3 +42,16 @@ extension UserRoleColor on UserRole {
     }
   }
 }
+
+extension UserRoleIcon on UserRole {
+  IconData get icon {
+    switch (this) {
+      case UserRole.admin:
+        return Icons.admin_panel_settings;
+      case UserRole.client:
+        return Icons.person;
+      case UserRole.technician:
+        return Icons.build;
+    }
+  }
+}
