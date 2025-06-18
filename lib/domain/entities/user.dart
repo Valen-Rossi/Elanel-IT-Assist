@@ -16,6 +16,24 @@ class User {
     required this.role,
   });
 }
+
+extension UserCopy on User {
+  User copyWith({
+    String? name,
+    String? email,
+    String? password,
+    UserRole? role,
+  }) {
+    return User(
+      id: id,
+      name: name ?? this.name,
+      email: email ?? this.email,
+      password: password ?? this.password,
+      role: role ?? this.role,
+    );
+  }
+}
+
 // ===== UserRole Extensions =====
 extension UserRoleLabel on UserRole {
   String get label {

@@ -90,9 +90,12 @@ class UsersFbDatasource extends IUsersDatasource {
   }
 
   @override
-  Future<void> updateUser(User user) {
+  Future<void> updateUser(User user) async{
     // TODO: implement updateUser
-    throw UnimplementedError();
+    final index = users.indexWhere((u) => u.id == user.id);
+    if (index != -1) {
+      users[index] = user;
+    }
   }
 
 }

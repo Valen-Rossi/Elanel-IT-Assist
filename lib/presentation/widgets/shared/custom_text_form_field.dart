@@ -15,6 +15,7 @@ class CustomTextFormField extends StatelessWidget {
   final Function(String)? onChanged;
   final String? Function(String?)? validator;
   final TextEditingController? controller;
+  final String? initialValue;
 
   const CustomTextFormField({
     super.key, 
@@ -31,6 +32,7 @@ class CustomTextFormField extends StatelessWidget {
     this.onChanged, 
     this.validator, 
     this.controller,
+    this.initialValue,
   });
   
   @override
@@ -44,6 +46,7 @@ class CustomTextFormField extends StatelessWidget {
     );
 
     return TextFormField(
+      initialValue: initialValue,
       controller: controller,
       textCapitalization: textCapitalization!,
       onChanged: onChanged,

@@ -33,9 +33,9 @@ class HomeViewState extends ConsumerState<HomeView> {
   final newTickets = ref.watch(newTicketsProvider);
   final inProgressTickets = ref.watch(inProgressTicketsProvider);
   final resolvedTickets = ref.watch(resolvedTicketsProvider);
-  final isLoading = ref.watch(recentTicketsProvider.notifier).isLoading;
+  // final isLoading = ref.watch(recentTicketsProvider.notifier).isLoading;
   final colors = Theme.of(context).colorScheme;
-  final textTheme = Theme.of(context).textTheme;
+  // final textTheme = Theme.of(context).textTheme;
 
   return Column(
     children: [

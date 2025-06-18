@@ -28,6 +28,17 @@ final appRouter = GoRouter(
               ),
 
               GoRoute(
+                path: "user/:id",
+                name: UserScreen.name,
+                builder: (context, state) {
+
+                  final userId = state.pathParameters['id']?? '';
+
+                  return UserScreen(userId: userId);
+                }
+              ),
+
+              GoRoute(
                 path: "device/:id",
                 name: DeviceScreen.name,
                 builder: (context, state) {
