@@ -86,6 +86,11 @@ final appRouter = GoRouter(
       ),
 
       GoRoute(
+        path: '/new-user',
+        builder: (context, state) => const NewUserScreen(),
+      ),
+
+      GoRoute(
         path: '/new-device',
         builder: (context, state) => const NewDeviceScreen(),
       ),

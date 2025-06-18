@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:elanel_asistencia_it/presentation/widgets/widgets.dart';
 import 'package:elanel_asistencia_it/domain/entities/user.dart';
 import 'package:elanel_asistencia_it/presentation/providers/providers.dart';
+import 'package:go_router/go_router.dart';
 
 class UsersView extends ConsumerStatefulWidget {
   static const name = 'users-view';
@@ -29,6 +30,13 @@ class _UsersViewState extends ConsumerState<UsersView> {
     final colors = Theme.of(context).colorScheme;
 
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          context.push('/new-user');
+        },
+        shape: const CircleBorder(),
+        child: const Icon(Icons.add)
+      ),
       appBar: AppBar(
         title: Text(
           'Usuarios',

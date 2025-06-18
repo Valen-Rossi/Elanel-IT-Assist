@@ -6,3 +6,4 @@ export 'package:elanel_asistencia_it/presentation/screens/tickets/home_screen.da
 export 'package:elanel_asistencia_it/presentation/screens/tickets/new_ticket_screen.dart';
 export 'package:elanel_asistencia_it/presentation/screens/tickets/ticket_qr_scan_screen.dart';
 export 'package:elanel_asistencia_it/presentation/screens/tickets/ticket_screen.dart';
+export 'package:elanel_asistencia_it/presentation/screens/users/new_user_screen.dart';

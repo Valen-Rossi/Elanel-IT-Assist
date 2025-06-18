@@ -18,13 +18,13 @@ class UsersRepositoryImpl extends IUsersRepository {
   @override
   Future<void> addUser(User user) {
     // Implementation to add a user
-    throw UnimplementedError('addUser method not implemented');
+    return datasource.addUser(user);
   }
 
   @override
   Future<void> updateUser(User user) {
     // Implementation to update a user
-    throw UnimplementedError('updateUser method not implemented');
+    return datasource.updateUser(user);
   }
 
   @override
