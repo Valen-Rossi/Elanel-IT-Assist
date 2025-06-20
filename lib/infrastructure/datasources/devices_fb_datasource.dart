@@ -1,54 +1,51 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:elanel_asistencia_it/domain/datasources/devices_datasource.dart';
 import 'package:elanel_asistencia_it/domain/entities/device.dart';
+import 'package:elanel_asistencia_it/infrastructure/mappers/device_mapper.dart';
+import 'package:elanel_asistencia_it/infrastructure/models/firebase/device_firebase.dart';
 
 
 class DevicesFbDatasource extends IDevicesDatasource {
 
-  final List<Device> devices = [
-    Device(
-      id: '001',
-      name: 'Laptop Dell XPS 13',
-      type: DeviceType.laptop,
-      ticketCount: 7,
-      lastMaintenance: DateTime.now(),
-    ),
-    Device(
-      id: '002',
-      name: 'Smartphone Samsung Galaxy S21',
-      type: DeviceType.phone,
-      ticketCount: 11,
-      lastMaintenance: DateTime.now().subtract(const Duration(hours: 2)),
-    ),
-    Device(
-      id: '003',
-      name: 'Monitor LG UltraWide 34"',
-      type: DeviceType.monitor,
-      ticketCount: 22,
-      lastMaintenance: DateTime.now().subtract(const Duration(days: 8)),
-    ),
-  ];
+  final FirebaseFirestore db = FirebaseFirestore.instance;
 
   @override
   Future<List<Device>> getDevices() async {
+    final query = await db.collection('device').get();
+
+    // print('Documentos encontrados: ${query.docs.length}');
+
+    final devices = query.docs.map((doc) {
+      final deviceFb = DeviceFromFirebase.fromJson(doc.id, doc.data());
+      return DeviceMapper.deviceFirebaseToEntity(deviceFb);
+    }).toList();
+
     return devices;
   }
+
   
   @override
   Future<void> addDevice(Device device) async {
-    devices.insert(0, device);
+    final docRef = db.collection('device').doc(); // genera un nuevo id
+    final newDevice = device.copyWith(id: docRef.id); // copiás el device con ese id
+    final deviceFb = DeviceMapper.deviceEntityToFirebase(newDevice);
+
+    await docRef.set(deviceFb.toJson());
   }
+
+
   
   @override
   Future<void> deleteDevice(String id) async {
+    await db.collection('device').doc(id).delete();
   }
   
   @override
-  Future<void> updateDevice(Device device) async{
-    // TODO: implement updateDevice
-    final index = devices.indexWhere((t) => t.id == device.id);
-    if (index != -1) {
-      devices[index] = device;
-    }
+  Future<void> updateDevice(Device device) async {
+    final deviceFb = DeviceMapper.deviceEntityToFirebase(device);
+
+    await db.collection('device').doc(device.id).update(deviceFb.toJson());
   }
+
   
 }

@@ -31,6 +31,34 @@ class Device {
     required this.lastMaintenance,
   });
 }
+
+extension DeviceCopy on Device {
+  Device copyWith({
+    String? id,
+    String? name,
+    DeviceType? type,
+    int? ticketCount,
+    DateTime? lastMaintenance,
+  }) {
+    return Device(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      type: type ?? this.type,
+      ticketCount: ticketCount ?? this.ticketCount,
+      lastMaintenance: lastMaintenance ?? this.lastMaintenance,
+    );
+  }
+}
+
+extension DeviceTypeX on DeviceType {
+  static DeviceType fromString(String type) {
+    return DeviceType.values.firstWhere(
+      (e) => e.name == type,
+      orElse: () => DeviceType.other,
+    );
+  }
+}
+
 // ===== DeviceType Extensions =====
 extension DeviceTypeLabel on DeviceType {
   String get label {

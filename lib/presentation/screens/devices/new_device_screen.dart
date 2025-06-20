@@ -107,7 +107,7 @@ class _NewDeviceViewState extends ConsumerState<_NewDeviceView> {
               setState(() => isLoading = true);
 
               final newDevice = Device(
-                id: DateTime.now().millisecondsSinceEpoch.toString(), // ejemplo de id temporal
+                id: '', // ejemplo de id temporal
                 name: deviceName,
                 type: deviceType, 
                 ticketCount: 0, 

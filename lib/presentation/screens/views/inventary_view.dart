@@ -34,12 +34,17 @@ class InventaryViewState extends ConsumerState<InventaryView> {
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          context.push('/new-device');
-        },
-        shape: const CircleBorder(),
-        child: const Icon(Icons.add),
-      ),
+      onPressed: () async {
+        final newDeviceId = await context.push<String>('/new-device');
+
+        if (newDeviceId != null && context.mounted) {
+          // Volvió de la pantalla de nuevo dispositivo
+          await ref.read(devicesProvider.notifier).loadDevices();
+        }
+      },
+      shape: const CircleBorder(),
+      child: const Icon(Icons.add),
+    ),
       appBar: AppBar(
         title: Text(
           'Inventario',

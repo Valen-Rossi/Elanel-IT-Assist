@@ -1,4 +1,4 @@
-package com.example.elanel_asistencia_it
+package com.valentinorossi.elanelitassistapp
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -47,7 +47,6 @@ class DevicesNotifier extends StateNotifier<List<Device>> {
     isLoading = true;
 
     await addDevice(device);
-    state = [device, ...state];
 
     isLoading = false;
   }
