@@ -22,7 +22,7 @@ class Ticket {
   final String deviceId;
   final String technicianId;
   final DateTime createdAt;
-  final DateTime asssignedAt;
+  final DateTime assignedAt;
   final DateTime openedAt;
   final DateTime closedAt;
   final bool hasFeedback;
@@ -38,7 +38,7 @@ class Ticket {
     required this.deviceId,
     required this.technicianId,
     required this.createdAt,
-    required this.asssignedAt,
+    required this.assignedAt,
     required this.openedAt,
     required this.closedAt,
     required this.hasFeedback,
@@ -51,7 +51,7 @@ extension TicketCopy on Ticket {
     String? technicianId,
     TicketPriority? priority,
     TicketStatus? status,
-    DateTime? asssignedAt,
+    DateTime? assignedAt,
     DateTime? openedAt,
     DateTime? closedAt,
     bool? hasFeedback,
@@ -68,13 +68,62 @@ extension TicketCopy on Ticket {
       deviceId: deviceId,
       technicianId: technicianId ?? this.technicianId,
       createdAt: createdAt,
-      asssignedAt: asssignedAt ?? this.asssignedAt,
+      assignedAt: assignedAt ?? this.assignedAt,
       openedAt: openedAt ?? this.openedAt,
       closedAt: closedAt ?? this.closedAt,
       hasFeedback: hasFeedback ?? this.hasFeedback,
     );
   }
 
+}
+
+extension TicketStatusX on TicketStatus {
+  static TicketStatus fromString(String status) {
+    switch (status) {
+      case 'newTicket':
+        return TicketStatus.newTicket;
+      case 'inProgress':
+        return TicketStatus.inProgress;
+      case 'resolved':
+        return TicketStatus.resolved;
+      default:
+        throw ArgumentError('Unknown ticket status: $status');
+    }
+  }
+}
+
+extension TicketPriorityX on TicketPriority {
+  static TicketPriority fromString(String priority) {
+    switch (priority) {
+      case 'low':
+        return TicketPriority.low;
+      case 'medium':
+        return TicketPriority.medium;
+      case 'high':
+        return TicketPriority.high;
+      default:
+        return TicketPriority.low;
+    }
+  }
+}
+
+extension TicketCategoryX on TicketCategory {
+  static TicketCategory fromString(String category) {
+    switch (category) {
+      case 'hardware':
+        return TicketCategory.hardware;
+      case 'software':
+        return TicketCategory.software;
+      case 'account':
+        return TicketCategory.account;
+      case 'network':
+        return TicketCategory.network;
+      case 'other':
+        return TicketCategory.other;
+      default:
+        throw ArgumentError('Unknown ticket category: $category');
+    }
+  }
 }
 
 extension TicketStatusText on TicketStatus {

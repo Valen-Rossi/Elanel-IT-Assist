@@ -36,7 +36,14 @@ class TicketsViewState extends ConsumerState<TicketsView> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         shape: const CircleBorder(),
-        onPressed: () => context.push('/new-ticket'),
+        onPressed: () async{
+          final newTicketId = await context.push<String>('/new-ticket');
+
+          if (newTicketId != null && context.mounted) {
+            // Volvió de la pantalla de nuevo ticket
+            await ref.read(recentTicketsProvider.notifier).loadTickets();
+          }
+        },
         child: const Icon(Icons.add),
       ),
       body: Column(

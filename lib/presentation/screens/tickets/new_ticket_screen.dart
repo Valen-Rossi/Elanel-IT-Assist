@@ -144,9 +144,9 @@ class _NewTicketViewState extends ConsumerState<_NewTicketView> {
 
            CustomTextFormField(
             controller: _deviceSearchController,
-            textInputType: TextInputType.number,
             label: 'Buscar por ID de dispositivo',
             hintText: 'Por ejemplo: 001',
+            textCapitalization: TextCapitalization.none,
             icon: Icons.search_rounded,
             suffixIcon: _deviceSearchController.text.isNotEmpty
             ? IconButton(
@@ -303,7 +303,7 @@ class _NewTicketViewState extends ConsumerState<_NewTicketView> {
                       setState(() => isLoading = true);
 
                       final ticket = Ticket(
-                        id: DateTime.now().millisecondsSinceEpoch.toString(),
+                        id: '',
                         title: ticketTitle,
                         description: ticketDescription,
                         status: TicketStatus.newTicket,
@@ -313,7 +313,7 @@ class _NewTicketViewState extends ConsumerState<_NewTicketView> {
                         deviceId: selectedDevice!.id,
                         technicianId: '',
                         createdAt: DateTime.now(),
-                        asssignedAt: DateTime.now(),
+                        assignedAt: DateTime.now(),
                         openedAt: DateTime.now(),
                         closedAt: DateTime.now(),
                         hasFeedback: false,
@@ -337,7 +337,7 @@ class _NewTicketViewState extends ConsumerState<_NewTicketView> {
                       }
 
                       if (context.mounted) {
-                        context.pop();
+                        context.pop(ticket.id);
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: const Text('Ticket creado con éxito'),

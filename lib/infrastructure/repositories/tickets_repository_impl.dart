@@ -1,34 +1,20 @@
 import 'package:elanel_asistencia_it/domain/datasources/tickets_datasource.dart';
 import 'package:elanel_asistencia_it/domain/entities/ticket.dart';
-import 'package:elanel_asistencia_it/domain/repositories/tickets_repository.dart';
 
-
-class TicketsRepositoryImpl extends ITicketsRepository {
-
+class TicketsRepositoryImpl implements ITicketsDatasource {
   final ITicketsDatasource datasource;
-
+  
   TicketsRepositoryImpl(this.datasource);
-  
+
   @override
-  Future<List<Ticket>> getTickets() {
-    return datasource.getTickets();
-  }
-  
+  Future<void> addTicket(Ticket t) => datasource.addTicket(t);
+
   @override
-  Future<void> addTicket(Ticket ticket) {
-    return datasource.addTicket(ticket);
-  }
-  
+  Future<void> deleteTicket(String id) => datasource.deleteTicket(id);
+
   @override
-  Future<void> deleteTicket(String id) {
-    // TODO: implement deleteTicket
-    throw UnimplementedError();
-  }
-  
+  Future<List<Ticket>> getTickets() => datasource.getTickets();
+
   @override
-  Future<void> updateTicket(Ticket ticket) {
-    // TODO: implement updateTicket
-    return datasource.updateTicket(ticket);
-  }
-  
+  Future<void> updateTicket(Ticket t) => datasource.updateTicket(t);
 }
