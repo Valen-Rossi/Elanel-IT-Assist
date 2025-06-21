@@ -18,8 +18,11 @@ class TicketsFbDatasource extends ITicketsDatasource {
 
   @override
   Future<void> addTicket(Ticket ticket) async {
-    final fb = TicketMapper.toFirebase(ticket);
-    await _db.doc(ticket.id).set(fb.toJson());
+    final docRef = _db.doc(); // genera un nuevo id
+    final newTicket = ticket.copyWith(id: docRef.id); // copiás el ticket con ese id
+
+    final ticketfb = TicketMapper.toFirebase(newTicket);
+    await docRef.set(ticketfb.toJson());
   }
 
   @override

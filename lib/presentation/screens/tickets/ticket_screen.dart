@@ -103,7 +103,11 @@ class _TicketViewState extends ConsumerState<_TicketView> {
                       ? TicketStatus.inProgress
                       : TicketStatus.resolved;
 
-                  final updatedTicket = ticket.copyWith(status: newStatus);
+                  final updatedTicket = ticket.copyWith(
+                    status: newStatus,
+                    openedAt: newStatus == TicketStatus.inProgress ? DateTime.now() : ticket.openedAt,
+                    closedAt: newStatus == TicketStatus.resolved ? DateTime.now() : ticket.closedAt,
+                  );
                   await ref.read(recentTicketsProvider.notifier).updateTicket(updatedTicket);
 
                   if (await Vibration.hasVibrator()) {

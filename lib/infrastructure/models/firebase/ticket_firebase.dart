@@ -9,6 +9,9 @@ class TicketFromFirebase {
   final String priority;
   final String category;
   final String otherCategory;
+  final String createdById;
+  final String createdByEmail;
+  final String createdByName;
   final String deviceId;
   final String technicianId;
   final Timestamp createdAt;
@@ -25,6 +28,9 @@ class TicketFromFirebase {
     required this.priority,
     required this.category,
     required this.otherCategory,
+    required this.createdById,
+    required this.createdByEmail,
+    required this.createdByName,
     required this.deviceId,
     required this.technicianId,
     required this.createdAt,
@@ -43,6 +49,9 @@ class TicketFromFirebase {
         priority: json['priority'] ?? TicketPriority.low.name,
         category: json['category'] ?? TicketCategory.software.name,
         otherCategory: json['otherCategory'] ?? '',
+        createdById: json['createdById'] ?? '',
+        createdByEmail: json['createdBy_email'] ?? '',
+        createdByName: json['createdBy_name'] ?? '',
         deviceId: json['deviceId'] ?? '',
         technicianId: json['technicianId'] ?? '',
         createdAt: json['createdAt'] as Timestamp? ?? Timestamp.now(),

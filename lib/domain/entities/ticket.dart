@@ -19,6 +19,9 @@ class Ticket {
   final TicketPriority priority;
   final TicketCategory category;
   final String otherCaregory;
+  final String createdById;
+  final String createdByEmail;
+  final String createdByName;
   final String deviceId;
   final String technicianId;
   final DateTime createdAt;
@@ -35,6 +38,9 @@ class Ticket {
     required this.priority,
     required this.category,
     required this.otherCaregory,
+    required this.createdById,
+    required this.createdByEmail,
+    required this.createdByName,
     required this.deviceId,
     required this.technicianId,
     required this.createdAt,
@@ -48,6 +54,7 @@ class Ticket {
 
 extension TicketCopy on Ticket {
   Ticket copyWith({
+    String? id,
     String? technicianId,
     TicketPriority? priority,
     TicketStatus? status,
@@ -58,13 +65,16 @@ extension TicketCopy on Ticket {
     // otros campos si querés
   }) {
     return Ticket(
-      id: id,
+      id: id ?? this.id,
       title: title,
       description: description,
       status: status ?? this.status,
       priority: priority ?? this.priority,
       category: category,
       otherCaregory: otherCaregory,
+      createdById: createdById,
+      createdByEmail: createdByEmail,
+      createdByName: createdByName,
       deviceId: deviceId,
       technicianId: technicianId ?? this.technicianId,
       createdAt: createdAt,

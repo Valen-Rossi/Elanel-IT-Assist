@@ -55,13 +55,30 @@ class InfoTicketTimeline extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Text(
-                    'Ticket creado',
-                    style: TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.w500,
-                      color: colors.primary,
-                    ),
+                  Row(
+                    children: [
+
+                      Text(
+                        'Ticket creado',
+                        style: TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.w500,
+                          color: colors.primary,
+                        ),
+                      ),
+                      Spacer(),
+                      Text(
+                        '${ticket.createdAt.day.toString()
+                          .padLeft(2, '0')}-${ticket.createdAt.month.toString()
+                          .padLeft(2, '0')}-${ticket.createdAt.year} | ${ticket.createdAt.hour.toString()
+                          .padLeft(2, '0')}:${ticket.createdAt.minute.toString()
+                          .padLeft(2, '0')}',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: colors.onSurface.withAlpha(157),
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 10),
                   FilledButton.tonalIcon(
@@ -100,13 +117,32 @@ class InfoTicketTimeline extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Text(
-                    'Técnico asignado',
-                    style: TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.w500,
-                      color: colors.primary,
-                    ),
+                  Row(
+                    children: [
+                      
+                      Text(
+                        'Técnico asignado',
+                        style: TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.w500,
+                          color: colors.primary,
+                        ),
+                      ),
+                      Spacer(),
+                      Text(
+                        technician != null
+                        ?'${ticket.assignedAt.day.toString()
+                          .padLeft(2, '0')}-${ticket.assignedAt.month.toString()
+                          .padLeft(2, '0')}-${ticket.assignedAt.year} | ${ticket.assignedAt.hour.toString()
+                          .padLeft(2, '0')}:${ticket.assignedAt.minute.toString()
+                          .padLeft(2, '0')}'
+                        :'Pendiente',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: colors.onSurface.withAlpha(157),
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 10),
                   FilledButton.tonalIcon(
@@ -139,7 +175,7 @@ class InfoTicketTimeline extends ConsumerWidget {
                       );
 
                       if (selectedTech != null) {
-                        final updatedTicket = ticket.copyWith(technicianId: selectedTech.id);
+                        final updatedTicket = ticket.copyWith(technicianId: selectedTech.id, assignedAt: DateTime.now());
                         await ref.read(recentTicketsProvider.notifier).updateTicket(updatedTicket);
 
                         if (await Vibration.hasVibrator()) {
@@ -183,16 +219,36 @@ class InfoTicketTimeline extends ConsumerWidget {
               padding: const EdgeInsets.only(left: 8),
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: Text(
-                  'En curso',
-                  style: TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.w500,
-                    color: (ticket.status == TicketStatus.inProgress ||
-                            ticket.status == TicketStatus.resolved)
-                        ? colors.primary
-                        : colors.secondary,
-                  ),
+                child: Row(
+                  children: [
+
+                    Text(
+                      'En curso',
+                      style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w500,
+                        color: (ticket.status == TicketStatus.inProgress ||
+                                ticket.status == TicketStatus.resolved)
+                            ? colors.primary
+                            : colors.secondary,
+                      ),
+                    ),
+                    Spacer(),
+                      Text(
+                        (ticket.status == TicketStatus.inProgress ||
+                        ticket.status == TicketStatus.resolved)
+                        ?'${ticket.openedAt.day.toString()
+                          .padLeft(2, '0')}-${ticket.openedAt.month.toString()
+                          .padLeft(2, '0')}-${ticket.openedAt.year} | ${ticket.openedAt.hour.toString()
+                          .padLeft(2, '0')}:${ticket.openedAt.minute.toString()
+                          .padLeft(2, '0')}'
+                        :'Pendiente',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: colors.onSurface.withAlpha(157),
+                        ),
+                      ),
+                  ],
                 ),
               ),
             ),
@@ -223,15 +279,34 @@ class InfoTicketTimeline extends ConsumerWidget {
               padding: const EdgeInsets.only(left: 8),
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: Text(
-                  'Resuelto',
-                  style: TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.w500,
-                    color: ticket.status == TicketStatus.resolved
-                        ? colors.primary
-                        : colors.secondary,
-                  ),
+                child: Row(
+                  children: [
+                    
+                    Text(
+                      'Resuelto',
+                      style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w500,
+                        color: ticket.status == TicketStatus.resolved
+                            ? colors.primary
+                            : colors.secondary,
+                      ),
+                    ),
+                    Spacer(),
+                      Text(
+                        ticket.status == TicketStatus.resolved
+                        ?'${ticket.closedAt.day.toString()
+                          .padLeft(2, '0')}-${ticket.closedAt.month.toString()
+                          .padLeft(2, '0')}-${ticket.closedAt.year} | ${ticket.closedAt.hour.toString()
+                          .padLeft(2, '0')}:${ticket.closedAt.minute.toString()
+                          .padLeft(2, '0')}'
+                        :'Pendiente',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: colors.onSurface.withAlpha(157),
+                        ),
+                      ),
+                  ],
                 ),
               ),
             ),
