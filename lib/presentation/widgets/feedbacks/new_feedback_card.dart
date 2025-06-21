@@ -47,6 +47,7 @@ class NewFeedbackCardState extends ConsumerState<NewFeedbackCard> {
     setState(() => isSubmitting = true);
 
       final feedback = TicketFeedback(
+        id: '',
         ticketId: widget.ticket.id,
         rating: _rating,
         comment: commentController.text.trim(),
@@ -55,6 +56,7 @@ class NewFeedbackCardState extends ConsumerState<NewFeedbackCard> {
 
       await ref.read(feedbacksProvider.notifier).createFeedback(feedback);
       await ref.read(recentTicketsProvider.notifier).updateTicket(widget.ticket.copyWith(hasFeedback: true));
+      
       if (mounted) {
         Vibration.vibrate(preset: VibrationPreset.singleShortBuzz);
         ScaffoldMessenger.of(context).showSnackBar(

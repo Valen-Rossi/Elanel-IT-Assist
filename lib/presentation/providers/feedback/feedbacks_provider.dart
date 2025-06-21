@@ -43,7 +43,7 @@ class FeedbacksNotifier extends StateNotifier<List<TicketFeedback>> {
     isLoading = true;
 
     await sendFeedback(feedback);
-    state = [feedback, ...state];
+    state = [...state, feedback];
 
     isLoading = false;
   }
