@@ -21,6 +21,42 @@ class FAQ {
     required this.type,
   });
 }
+
+extension FAQCopy on FAQ {
+  FAQ copyWith({
+    String? id,
+    String? title,
+    String? description,
+    FAQType? type,
+  }) {
+    return FAQ(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      type: type ?? this.type,
+    );
+  }
+}
+
+extension FAQTypeX on FAQType {
+  static FAQType fromString(String type) {
+    switch (type) {
+      case 'hardware':
+        return FAQType.hardware;
+      case 'software':
+        return FAQType.software;
+      case 'account':
+        return FAQType.account;
+      case 'network':
+        return FAQType.network;
+      case 'other':
+        return FAQType.other;
+      default:
+        return FAQType.other;
+    }
+  }
+}
+
 // ===== FAQType Extensions =====
 extension FAQTypeLabel on FAQType {
   String get label {

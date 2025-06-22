@@ -155,7 +155,7 @@ class NewFAQScreenState extends ConsumerState<NewFAQScreen> {
                   }
 
                   if (context.mounted) {
-                    Navigator.of(context).pop();
+                    Navigator.of(context).pop(newFAQ.id);
 
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(

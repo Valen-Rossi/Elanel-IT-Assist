@@ -44,8 +44,13 @@ class HelpViewState extends ConsumerState<HelpView> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         shape: const CircleBorder(),
-        onPressed: () {
-          context.push('/new-faq');
+        onPressed: () async {
+           final newFAQId = await context.push<String>('/new-faq');
+
+          if (newFAQId != null && context.mounted) {
+            // Volvió de la pantalla de nueva FAQ
+            await ref.read(faqsProvider.notifier).loadFAQs();
+          }
         },
         child: const Icon(Icons.add),
       ),

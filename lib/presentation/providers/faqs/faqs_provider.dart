@@ -41,7 +41,7 @@ class FAQsNotifier extends StateNotifier<List<FAQ>> {
     isLoading = true;
 
     await addFAQ(faq);
-    state = [faq, ...state];
+    // state = [faq, ...state];
 
     isLoading = false;
   }

@@ -47,7 +47,7 @@ class TicketFromFirebase {
         description: json['description'] ?? '',
         status: json['status'] ?? TicketStatus.newTicket.name,
         priority: json['priority'] ?? TicketPriority.low.name,
-        category: json['category'] ?? TicketCategory.software.name,
+        category: json['category'] ?? TicketCategory.other.name,
         otherCategory: json['otherCategory'] ?? '',
         createdById: json['createdById'] ?? '',
         createdByEmail: json['createdBy_email'] ?? '',
