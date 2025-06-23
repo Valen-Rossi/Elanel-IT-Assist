@@ -33,11 +33,15 @@ class HomeViewState extends ConsumerState<HomeView> {
   final newTickets = ref.watch(newTicketsProvider);
   final inProgressTickets = ref.watch(inProgressTicketsProvider);
   final resolvedTickets = ref.watch(resolvedTicketsProvider);
+  final currentUser = ref.watch(currentAppUserProvider);
+
   // final isLoading = ref.watch(recentTicketsProvider.notifier).isLoading;
   final colors = Theme.of(context).colorScheme;
   // final textTheme = Theme.of(context).textTheme;
 
-  return Column(
+  return (currentUser == null)
+  ? const Center(child: CircularProgressIndicator())
+  : Column(
     children: [
 
       const CustomAppbar(),
@@ -46,7 +50,7 @@ class HomeViewState extends ConsumerState<HomeView> {
       Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         alignment: Alignment.centerLeft,
-        child: Text('Hola Tintin!',
+        child: Text('Hola ${currentUser.name}!',
           style: TextStyle(
             color: colors.primary,
             fontSize: 27,

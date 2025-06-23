@@ -19,6 +19,7 @@ export 'tickets/ticket_info_provider.dart';
 export 'tickets/tickets_filter_provider.dart';
 export 'tickets/tickets_providers.dart';
 export 'tickets/tickets_repository_provider.dart';
+export 'users/current_user_provider.dart';
 export 'users/user_filter_provider.dart';
 export 'users/user_info_provider.dart';
 export 'users/users_provider.dart';

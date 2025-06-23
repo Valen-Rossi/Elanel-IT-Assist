@@ -20,10 +20,19 @@ class CustomAppbar extends ConsumerWidget {
           width: double.infinity,
           child: Row(
             children: [
-              Icon(Icons.diamond_outlined, color: colors.primary),
-              const SizedBox(width: 5),
+              // Icon(Icons.diamond_outlined, color: colors.primary),
+              // const SizedBox(width: 5),
+              Image.asset(
+                'assets/images/elanel.png',
+                height: 27,
+              ),
+              
+              const SizedBox(width: 7),
+              
               Text('Elanel Asistencia IT', style: textTheme.titleMedium),
+              
               const Spacer(),
+              
               IconButton(
                 onPressed: () {
                   final current = ref.read(themeModeProvider);

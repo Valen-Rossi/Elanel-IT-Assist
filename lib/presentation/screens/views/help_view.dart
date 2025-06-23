@@ -1,9 +1,11 @@
-import 'package:elanel_asistencia_it/domain/entities/faq.dart';
-import 'package:elanel_asistencia_it/presentation/providers/providers.dart';
-import 'package:elanel_asistencia_it/presentation/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
+import 'package:elanel_asistencia_it/domain/entities/faq.dart';
+import 'package:elanel_asistencia_it/domain/entities/user.dart';
+import 'package:elanel_asistencia_it/presentation/providers/providers.dart';
+import 'package:elanel_asistencia_it/presentation/widgets/widgets.dart';
 
 class HelpView extends ConsumerStatefulWidget {
 
@@ -39,10 +41,14 @@ class HelpViewState extends ConsumerState<HelpView> {
     final faqs = ref.watch(filteredFaqsProvider);
     final selectedType = ref.watch(faqFilterProvider);
     final filterNotifier = ref.read(faqFilterProvider.notifier);
+    final currentUser = ref.watch(currentAppUserProvider);
     final colors = Theme.of(context).colorScheme;
 
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(
+    return (currentUser == null)
+    ? const Center(child: CircularProgressIndicator())
+    : Scaffold(
+      floatingActionButton: (currentUser.role == UserRole.admin)
+      ? FloatingActionButton(
         shape: const CircleBorder(),
         onPressed: () async {
            final newFAQId = await context.push<String>('/new-faq');
@@ -53,7 +59,8 @@ class HelpViewState extends ConsumerState<HelpView> {
           }
         },
         child: const Icon(Icons.add),
-      ),
+      )
+      : null,
       appBar: AppBar(
         title: Text(
           'Preguntas Frecuentes',
