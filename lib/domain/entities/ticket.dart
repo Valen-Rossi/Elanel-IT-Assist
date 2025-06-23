@@ -24,6 +24,7 @@ class Ticket {
   final String createdByName;
   final String deviceId;
   final String technicianId;
+  final List<String> mediaUrls;
   final DateTime createdAt;
   final DateTime assignedAt;
   final DateTime openedAt;
@@ -43,6 +44,7 @@ class Ticket {
     required this.createdByName,
     required this.deviceId,
     required this.technicianId,
+    required this.mediaUrls,
     required this.createdAt,
     required this.assignedAt,
     required this.openedAt,
@@ -77,6 +79,7 @@ extension TicketCopy on Ticket {
       createdByName: createdByName,
       deviceId: deviceId,
       technicianId: technicianId ?? this.technicianId,
+      mediaUrls: mediaUrls,
       createdAt: createdAt,
       assignedAt: assignedAt ?? this.assignedAt,
       openedAt: openedAt ?? this.openedAt,

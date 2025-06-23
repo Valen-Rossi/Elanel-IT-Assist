@@ -84,6 +84,8 @@ class _TicketViewState extends ConsumerState<_TicketView> {
         children: [
           InfoTicketCard(size: size, ticket: ticket, colors: colors),
 
+          
+
           InfoTicketTimeline(
             ticket: ticket,
             technician: widget.technician,

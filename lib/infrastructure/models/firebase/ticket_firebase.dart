@@ -14,6 +14,7 @@ class TicketFromFirebase {
   final String createdByName;
   final String deviceId;
   final String technicianId;
+  final List<String> mediaUrls;
   final Timestamp createdAt;
   final Timestamp assignedAt;
   final Timestamp openedAt;
@@ -33,6 +34,7 @@ class TicketFromFirebase {
     required this.createdByName,
     required this.deviceId,
     required this.technicianId,
+    required this.mediaUrls,
     required this.createdAt,
     required this.assignedAt,
     required this.openedAt,
@@ -54,6 +56,7 @@ class TicketFromFirebase {
         createdByName: json['createdBy_name'] ?? '',
         deviceId: json['deviceId'] ?? '',
         technicianId: json['technicianId'] ?? '',
+        mediaUrls: List<String>.from(json['mediaUrls'] ?? []),
         createdAt: json['createdAt'] as Timestamp? ?? Timestamp.now(),
         assignedAt: (json['assignedAt']!=null) 
             ? json['assignedAt'] as Timestamp
@@ -79,6 +82,7 @@ class TicketFromFirebase {
         'createdBy_email': createdByEmail,
         'createdBy_name': createdByName,
         'technicianId': technicianId,
+        'mediaUrls': mediaUrls,
         'createdAt': createdAt,
         'assignedAt': assignedAt,
         'openedAt': openedAt,

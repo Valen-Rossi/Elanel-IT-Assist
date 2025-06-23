@@ -3,8 +3,13 @@ import 'package:elanel_asistencia_it/domain/entities/ticket.dart';
 import 'package:elanel_asistencia_it/domain/entities/device.dart';
 import 'package:elanel_asistencia_it/presentation/providers/providers.dart';
 import 'package:flutter/material.dart';
+import 'package:file_picker/file_picker.dart';
+import 'dart:io';
+import 'package:video_player/video_player.dart';
+import 'package:path/path.dart' as p;
 
 import 'package:elanel_asistencia_it/presentation/widgets/widgets.dart';
+import 'package:elanel_asistencia_it/infrastructure/services/api_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:vibration/vibration.dart';
@@ -45,12 +50,19 @@ class _NewTicketView extends ConsumerStatefulWidget {
 
 class _NewTicketViewState extends ConsumerState<_NewTicketView> {
 
+  late final ValueNotifier<List<File>> mediaFilesNotifier;
+
   @override
   void initState() {
     super.initState();
-
     ref.read(devicesProvider.notifier).loadDevices();
+    mediaFilesNotifier = ValueNotifier([]);
+  }
 
+  @override
+  void dispose() {
+    mediaFilesNotifier.dispose();
+    super.dispose();
   }
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -61,6 +73,8 @@ class _NewTicketViewState extends ConsumerState<_NewTicketView> {
   String otherCategory = '';
   TicketCategory ticketCategory = TicketCategory.hardware;
   Device? selectedDevice;
+  final api = ApiService('http://149.50.136.149:80'); // Cambiá la IP según la de tu backend
+  List<File> selectedMediaFiles = [];
   bool isLoading = false;
 
   @override
@@ -288,19 +302,89 @@ class _NewTicketViewState extends ConsumerState<_NewTicketView> {
               ],
             ),
 
+            
+            FilledButton.tonalIcon(
+              icon: const Icon(Icons.attach_file),
+              label: const Text('Adjuntar archivos'),
+              onPressed: () async {
+                final result = await FilePicker.platform.pickFiles(
+                  allowMultiple: true,
+                  type: FileType.custom,
+                  allowedExtensions: ['jpg', 'jpeg', 'png', 'mp4', 'mov', 'avi'],
+                );
+
+                if (result != null && result.files.isNotEmpty) {
+                  final newFiles = result.paths.whereType<String>().map((path) => File(path)).toList();
+                  mediaFilesNotifier.value = [...mediaFilesNotifier.value, ...newFiles];
+                }
+              },
+            ),
+
+            ValueListenableBuilder<List<File>>(
+              valueListenable: mediaFilesNotifier,
+              builder: (context, files, _) {
+                if (files.isEmpty) return const SizedBox.shrink();
+
+                return Wrap(
+                  spacing: 10,
+                  runSpacing: 10,
+                  children: files.map((file) {
+                    final ext = p.extension(file.path).toLowerCase();
+
+                    final isImage = ['.jpg', '.jpeg', '.png'].contains(ext);
+                    final isVideo = ['.mp4', '.mov', '.avi'].contains(ext);
+
+                    return Stack(
+                      alignment: Alignment.topRight,
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: SizedBox(
+                            width: 100,
+                            height: 100,
+                            child: isImage
+                              ? Image.file(file, fit: BoxFit.cover)
+                              : isVideo
+                                ? _VideoThumbnail(file: file)
+                                : const Icon(Icons.insert_drive_file, size: 50),
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.cancel, color: Colors.red),
+                          onPressed: () {
+                            mediaFilesNotifier.value = List.from(mediaFilesNotifier.value)..remove(file);
+                          },
+                        ),
+                      ],
+                    );
+                  }).toList(),
+                );
+              },
+            ),
+
+
+
             FilledButton.icon(
               onPressed: isLoading
-                  ? null
-                  : () async {
-                      final isValid = _formKey.currentState!.validate();
-                      if (!isValid || selectedDevice == null || isLoading) {
-                        if (await Vibration.hasVibrator()) {
-                          Vibration.vibrate(preset: VibrationPreset.doubleBuzz); // 100ms
-                        }
-                        return;
+                ? null
+                : () async {
+                    final isValid = _formKey.currentState!.validate();
+                    if (!isValid || selectedDevice == null || isLoading) {
+                      if (await Vibration.hasVibrator()) {
+                        Vibration.vibrate(preset: VibrationPreset.doubleBuzz);
+                      }
+                      return;
+                    }
+
+                    setState(() => isLoading = true);
+
+                    try {
+                      List<String> mediaUrls = [];
+
+                      if (mediaFilesNotifier.value.isNotEmpty) {
+                        mediaUrls = await api.uploadMedia(mediaFilesNotifier.value);
                       }
 
-                      setState(() => isLoading = true);
 
                       final ticket = Ticket(
                         id: '',
@@ -320,23 +404,19 @@ class _NewTicketViewState extends ConsumerState<_NewTicketView> {
                         openedAt: DateTime.now(),
                         closedAt: DateTime.now(),
                         hasFeedback: false,
-                      );
-
-                      final updatedDevice = Device(
-                        id: selectedDevice!.id,
-                        name: selectedDevice!.name,
-                        type: selectedDevice!.type,
-                        ticketCount: selectedDevice!.ticketCount + 1,
-                        lastMaintenance: DateTime.now(),
+                        mediaUrls: mediaUrls, // ← asegurate que `Ticket` tenga este campo
                       );
 
                       await ref.read(recentTicketsProvider.notifier).createTicket(ticket);
-                      await ref.read(devicesProvider.notifier).updateDevice(updatedDevice);
-
-                      setState(() => isLoading = false);
+                      await ref.read(devicesProvider.notifier).updateDevice(
+                        selectedDevice!.copyWith(
+                          ticketCount: selectedDevice!.ticketCount + 1,
+                          lastMaintenance: DateTime.now(),
+                        ),
+                      );
 
                       if (await Vibration.hasVibrator()) {
-                        Vibration.vibrate(preset: VibrationPreset.singleShortBuzz); // 100ms
+                        Vibration.vibrate(preset: VibrationPreset.singleShortBuzz);
                       }
 
                       if (context.mounted) {
@@ -348,7 +428,15 @@ class _NewTicketViewState extends ConsumerState<_NewTicketView> {
                           ),
                         );
                       }
-                    },
+                    } catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Error: $e')),
+                      );
+                    } finally {
+                      setState(() => isLoading = false);
+                    }
+                },
+
               label: const Text(
                 'Crear Ticket',
                 style: TextStyle(
@@ -361,5 +449,41 @@ class _NewTicketViewState extends ConsumerState<_NewTicketView> {
         ),
       ),
     );
+  }
+}
+class _VideoThumbnail extends StatefulWidget {
+  final File file;
+  const _VideoThumbnail({required this.file});
+
+  @override
+  State<_VideoThumbnail> createState() => _VideoThumbnailState();
+}
+
+class _VideoThumbnailState extends State<_VideoThumbnail> {
+  late VideoPlayerController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = VideoPlayerController.file(widget.file)
+      ..initialize().then((_) {
+        setState(() {});
+      });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _controller.value.isInitialized
+        ? AspectRatio(
+            aspectRatio: _controller.value.aspectRatio,
+            child: VideoPlayer(_controller),
+          )
+        : const Center(child: CircularProgressIndicator());
   }
 }
